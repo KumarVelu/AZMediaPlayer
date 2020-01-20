@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="main_tabs">
+        <item>@string/video</item>
+        <item>@string/music</item>
+    </string-array>
+</resources>

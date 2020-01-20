@@ -2,13 +2,14 @@ package com.music.video.player.azmediaplayer.ui.base
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.music.video.player.azmediaplayer.utils.NetworkHelper
+import com.music.video.player.azmediaplayer.utils.common.Resource
+import com.music.video.player.azmediaplayer.utils.rx.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 
 
 abstract class BaseViewModel(
-        protected val compositeDisposable: CompositeDisposable,
-        protected val networkHelper: NetworkHelper
+    protected val schedulerProvider: SchedulerProvider,
+    protected val compositeDisposable: CompositeDisposable
 ) : ViewModel() {
 
     override fun onCleared() {
@@ -16,15 +17,8 @@ abstract class BaseViewModel(
         super.onCleared()
     }
 
-    val messageStringId: MutableLiveData<Int> = MutableLiveData()
-    val messageString: MutableLiveData<String> = MutableLiveData()
-
-    protected fun checkInternetConnection(): Boolean = networkHelper.isNetworkConnected()
-
-    protected fun handleNetworkError(err: Throwable?) =
-            err?.let {
-                // handle the error
-            }
+    val messageStringId: MutableLiveData<Resource<Int>> = MutableLiveData()
+    val messageString: MutableLiveData<Resource<String>> = MutableLiveData()
 
     abstract fun onCreate()
 }

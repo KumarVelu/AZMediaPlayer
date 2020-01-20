@@ -1,19 +1,14 @@
 package com.music.video.player.azmediaplayer.ui.main
 
 import androidx.lifecycle.MutableLiveData
-import com.music.video.player.azmediaplayer.data.local.DatabaseService
-import com.music.video.player.azmediaplayer.data.remote.NetworkService
 import com.music.video.player.azmediaplayer.ui.base.BaseViewModel
-import com.music.video.player.azmediaplayer.utils.NetworkHelper
+import com.music.video.player.azmediaplayer.utils.rx.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 
 class MainViewModel(
-    compositeDisposable: CompositeDisposable,
-    networkHelper: NetworkHelper,
-    private val databaseService: DatabaseService,
-    private val networkService: NetworkService
-)
-    : BaseViewModel(compositeDisposable, networkHelper) {
+    schedulerProvider: SchedulerProvider,
+    compositeDisposable: CompositeDisposable
+) : BaseViewModel(schedulerProvider, compositeDisposable) {
 
     val testData = MutableLiveData<String>()
 

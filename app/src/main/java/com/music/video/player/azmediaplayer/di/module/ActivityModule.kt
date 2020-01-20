@@ -9,6 +9,7 @@ import com.music.video.player.azmediaplayer.ui.base.BaseActivity
 import com.music.video.player.azmediaplayer.ui.main.MainViewModel
 import com.music.video.player.azmediaplayer.utils.NetworkHelper
 import com.music.video.player.azmediaplayer.utils.ViewModelProviderFactory
+import com.music.video.player.azmediaplayer.utils.rx.SchedulerProvider
 import dagger.Module
 import dagger.Provides
 import io.reactivex.disposables.CompositeDisposable
@@ -22,12 +23,10 @@ class ActivityModule(private val activity: BaseActivity<*>) {
 
     @Provides
     fun provideMainViewModel(
-        compositeDisposable: CompositeDisposable,
-        networkHelper: NetworkHelper,
-        databaseService: DatabaseService,
-        networkService: NetworkService
+        schedulerProvider: SchedulerProvider,
+        compositeDisposable: CompositeDisposable
     ): MainViewModel = ViewModelProviders.of(
         activity, ViewModelProviderFactory(MainViewModel::class) {
-            MainViewModel(compositeDisposable, networkHelper, databaseService, networkService)
+            MainViewModel(schedulerProvider, compositeDisposable)
         }).get(MainViewModel::class.java)
 }

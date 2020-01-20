@@ -2,9 +2,12 @@ package com.music.video.player.azmediaplayer.di.module
 
 import android.content.Context
 import com.music.video.player.azmediaplayer.MyApplication
+import com.music.video.player.azmediaplayer.data.repository.VideoRepository
 import com.music.video.player.azmediaplayer.di.ApplicationContext
 import com.music.video.player.azmediaplayer.di.DatabaseInfo
 import com.music.video.player.azmediaplayer.di.NetworkInfo
+import com.music.video.player.azmediaplayer.utils.rx.RxScheduleProvider
+import com.music.video.player.azmediaplayer.utils.rx.SchedulerProvider
 
 import dagger.Module
 import dagger.Provides
@@ -31,4 +34,10 @@ class ApplicationModule(private val application: MyApplication) {
 
     @Provides
     fun provideCompositeDisposable(): CompositeDisposable = CompositeDisposable()
+
+    @Provides
+    fun provideVideoRepository(): VideoRepository = VideoRepository(application)
+
+    @Provides
+    fun provideSchedulerProvider(): SchedulerProvider = RxScheduleProvider()
 }

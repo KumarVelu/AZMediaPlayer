@@ -7,6 +7,7 @@ import com.music.video.player.azmediaplayer.data.remote.NetworkService
 import com.music.video.player.azmediaplayer.di.ApplicationContext
 import com.music.video.player.azmediaplayer.di.module.ApplicationModule
 import com.music.video.player.azmediaplayer.utils.NetworkHelper
+import com.music.video.player.azmediaplayer.utils.rx.SchedulerProvider
 import dagger.Component
 import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Singleton
@@ -27,4 +28,6 @@ interface ApplicationComponent {
     fun getNetworkHelper(): NetworkHelper
 
     fun getCompositeDisposable(): CompositeDisposable
+
+    fun getSchedulerProvider(): SchedulerProvider
 }

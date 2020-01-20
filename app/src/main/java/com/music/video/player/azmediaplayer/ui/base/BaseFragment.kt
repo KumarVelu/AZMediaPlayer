@@ -44,11 +44,11 @@ abstract class BaseFragment<VM : BaseViewModel> : Fragment() {
 
     protected open fun setupObservers() {
         viewModel.messageString.observe(this, Observer {
-            showMessage(it)
+            it.data?.run { showMessage(this) }
         })
 
         viewModel.messageStringId.observe(this, Observer {
-            showMessage(it)
+            it.data?.run { showMessage(this) }
         })
     }
 

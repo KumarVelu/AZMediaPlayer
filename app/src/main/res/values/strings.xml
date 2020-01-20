@@ -3,4 +3,11 @@
 
     <string name="hello_msg_from_activity">Hello From Activity!</string>
     <string name="hello_msg_from_fragment">Hello From Fragment!</string>
+
+    <string name="video_fragment">Video Fragment</string>
+    <string name="music_fragment">Music Fragment</string>
+
+    <string name="video">Video</string>
+    <string name="music">Music</string>
+
 </resources>
