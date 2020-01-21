@@ -22,7 +22,7 @@ class VideoRepository @Inject constructor(
 
     private val videoListProjection = arrayOf(
         MediaStore.Video.Media._ID, MediaStore.Video.Media.TITLE,
-        MediaStore.Video.Media.DURATION
+        MediaStore.Video.Media.DURATION, MediaStore.Video.Media.DATA
     )
 
     @WorkerThread
@@ -46,8 +46,9 @@ class VideoRepository @Inject constructor(
                     val videoId = it.getLong(it.getColumnIndex(MediaStore.Video.Media._ID))
                     val title = it.getString(it.getColumnIndex(MediaStore.Video.Media.TITLE))
                     val duration = it.getLong(it.getColumnIndex(MediaStore.Video.Media.DURATION))
+                    val path = it.getString(it.getColumnIndex(MediaStore.Video.Media.DATA))
 
-                    videoList.add(Video(videoId, title, duration))
+                    videoList.add(Video(videoId, title, duration, path))
                 }
             }
         }catch (e: Exception){

@@ -6,13 +6,14 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.music.video.player.azmediaplayer.R
+import com.music.video.player.azmediaplayer.data.model.Video
 import com.music.video.player.azmediaplayer.di.component.FragmentComponent
 import com.music.video.player.azmediaplayer.ui.base.BaseFragment
-import com.music.video.player.azmediaplayer.utils.display.Toaster
+import com.music.video.player.player_lib.PlayerActivity
 import kotlinx.android.synthetic.main.fragment_video_list.*
 import javax.inject.Inject
 
-class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IItemClickListener{
+class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IItemClickListener {
 
     companion object {
 
@@ -32,6 +33,8 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IIte
     @Inject
     lateinit var videosAdapter: VideosAdapter
 
+    private var videoList: List<Video> = mutableListOf()
+
     override fun provideLayoutId(): Int = R.layout.fragment_video_list
 
     override fun injectDependencies(fragmentComponent: FragmentComponent) =
@@ -48,16 +51,25 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IIte
         super.setupObservers()
 
         viewModel.loading.observe(this, Observer {
-            pb_loading.visibility = if(it) View.VISIBLE else View.GONE
+            pb_loading.visibility = if (it) View.VISIBLE else View.GONE
         })
 
         viewModel.videoList.observe(this, Observer {
             Log.i(TAG, "setupObservers: $it")
-            it.data?.run { videosAdapter.appendData(this) }
+            it.data?.run {
+                videoList = this
+                videosAdapter.appendData(videoList)
+            }
         })
     }
 
+    @Suppress("UNCHECKED_CAST")
     override fun onItemClick(positon: Int) {
-        Toaster.show(context!!, "Position $positon")
+        val videoPathList = arrayListOf<String>()
+        for(video in videoList){
+            videoPathList.add(video.path)
+        }
+        startActivity(PlayerActivity.getStartIntent(context!!, videoPathList))
+
     }
 }
