@@ -8,10 +8,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.music.video.player.azmediaplayer.R
 import com.music.video.player.azmediaplayer.di.component.FragmentComponent
 import com.music.video.player.azmediaplayer.ui.base.BaseFragment
+import com.music.video.player.azmediaplayer.utils.display.Toaster
 import kotlinx.android.synthetic.main.fragment_video_list.*
 import javax.inject.Inject
 
-class VideoListFragment : BaseFragment<VideoListViewModel>(){
+class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IItemClickListener{
 
     companion object {
 
@@ -54,5 +55,9 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(){
             Log.i(TAG, "setupObservers: $it")
             it.data?.run { videosAdapter.appendData(this) }
         })
+    }
+
+    override fun onItemClick(positon: Int) {
+        Toaster.show(context!!, "Position $positon")
     }
 }

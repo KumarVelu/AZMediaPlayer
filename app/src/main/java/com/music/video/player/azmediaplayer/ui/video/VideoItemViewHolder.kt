@@ -9,8 +9,10 @@ import com.music.video.player.azmediaplayer.di.component.ViewHolderComponent
 import com.music.video.player.azmediaplayer.ui.base.BaseItemViewHolder
 import kotlinx.android.synthetic.main.item_view_video.view.*
 
-class VideoItemViewHolder(parent: ViewGroup):
-    BaseItemViewHolder<Video, VideoItemViewModel>(R .layout.item_view_video, parent){
+class VideoItemViewHolder(
+    parent: ViewGroup,
+    private val itemClickListener: VideosAdapter.IItemClickListener
+) : BaseItemViewHolder<Video, VideoItemViewModel>(R.layout.item_view_video, parent) {
 
     override fun injectDependencies(viewHolderComponent: ViewHolderComponent) {
         viewHolderComponent.inject(this)
@@ -29,7 +31,9 @@ class VideoItemViewHolder(parent: ViewGroup):
     }
 
     override fun setupView(view: View) {
-
+        itemView.setOnClickListener {
+            itemClickListener.onItemClick(adapterPosition)
+        }
     }
 
 
