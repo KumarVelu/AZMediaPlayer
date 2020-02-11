@@ -69,7 +69,7 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IIte
         for(video in videoList){
             videoPathList.add(video.path)
         }
-        startActivity(PlayerActivity.getStartIntent(context!!, videoPathList))
+        startActivity(PlayerActivity.getStartIntent(context!!, videoPathList, positon))
 
     }
 }

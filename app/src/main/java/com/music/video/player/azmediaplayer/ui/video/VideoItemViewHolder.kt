@@ -3,6 +3,9 @@ package com.music.video.player.azmediaplayer.ui.video
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.music.video.player.azmediaplayer.R
 import com.music.video.player.azmediaplayer.data.model.Video
 import com.music.video.player.azmediaplayer.di.component.ViewHolderComponent
@@ -10,7 +13,7 @@ import com.music.video.player.azmediaplayer.ui.base.BaseItemViewHolder
 import kotlinx.android.synthetic.main.item_view_video.view.*
 
 class VideoItemViewHolder(
-    parent: ViewGroup,
+    private val parent: ViewGroup,
     private val itemClickListener: VideosAdapter.IItemClickListener
 ) : BaseItemViewHolder<Video, VideoItemViewModel>(R.layout.item_view_video, parent) {
 
@@ -27,6 +30,15 @@ class VideoItemViewHolder(
 
         viewModel.duration.observe(this, Observer {
             itemView.tv_duration.text = it.toString()
+        })
+
+        viewModel.path.observe(this, Observer {
+            Glide
+                .with(parent.context)
+                .load(it)
+                .placeholder(R.mipmap.ic_launcher)
+                .transform( CenterCrop(), RoundedCorners(12))
+                .into(itemView.iv_video_thumbnail)
         })
     }
 
