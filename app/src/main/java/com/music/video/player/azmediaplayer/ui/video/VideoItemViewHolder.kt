@@ -10,6 +10,7 @@ import com.music.video.player.azmediaplayer.R
 import com.music.video.player.azmediaplayer.data.model.Video
 import com.music.video.player.azmediaplayer.di.component.ViewHolderComponent
 import com.music.video.player.azmediaplayer.ui.base.BaseItemViewHolder
+import com.music.video.player.azmediaplayer.utils.TimerUtils
 import kotlinx.android.synthetic.main.item_view_video.view.*
 
 class VideoItemViewHolder(
@@ -29,7 +30,7 @@ class VideoItemViewHolder(
         })
 
         viewModel.duration.observe(this, Observer {
-            itemView.tv_duration.text = it.toString()
+            itemView.tv_duration.text = TimerUtils.convertMillisToHMmSs(it)
         })
 
         viewModel.path.observe(this, Observer {

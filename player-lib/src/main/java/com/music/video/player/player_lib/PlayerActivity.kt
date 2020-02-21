@@ -28,10 +28,12 @@ class PlayerActivity : AppCompatActivity() {
     companion object {
 
         const val EXTRAS_MEDIA_PATH_LIST = "media_path_list"
+        const val EXTRAS_PLAY_POS = "play_position"
 
-        fun getStartIntent(context: Context, mediaPathList: ArrayList<String>) =
+        fun getStartIntent(context: Context, mediaPathList: ArrayList<String>, playPos: Int) =
             Intent(context, PlayerActivity::class.java).apply {
                 putStringArrayListExtra(EXTRAS_MEDIA_PATH_LIST, mediaPathList)
+                putExtra(EXTRAS_PLAY_POS, playPos)
             }
     }
 
@@ -40,6 +42,7 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_player)
 
         mediaPathList = intent.getStringArrayListExtra(EXTRAS_MEDIA_PATH_LIST)
+        currentWindow = intent.getIntExtra(EXTRAS_PLAY_POS, 0)
 
         initViewModel()
     }
