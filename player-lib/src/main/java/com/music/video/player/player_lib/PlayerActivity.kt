@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -29,6 +30,7 @@ class PlayerActivity : AppCompatActivity() {
 
         const val EXTRAS_MEDIA_PATH_LIST = "media_path_list"
         const val EXTRAS_PLAY_POS = "play_position"
+        const val TAG = "PlayerActivity"
 
         fun getStartIntent(context: Context, mediaPathList: ArrayList<String>, playPos: Int) =
             Intent(context, PlayerActivity::class.java).apply {
@@ -67,6 +69,8 @@ class PlayerActivity : AppCompatActivity() {
             initializePlayer()
             setUpObservers()
         }
+
+        initializeListeners()
     }
 
     @SuppressLint("InlinedApi")
@@ -86,6 +90,28 @@ class PlayerActivity : AppCompatActivity() {
 
         player?.playWhenReady = playWhenReady
         player?.seekTo(currentWindow, playbackPosition)
+    }
+
+    private fun initializeListeners() {
+        initializeControllerVisibilityListeners()
+    }
+
+    private fun initializeControllerVisibilityListeners() {
+        video_view.setControllerVisibilityListener{visibility ->
+            if(visibility == View.VISIBLE){
+                layout_toolbar.visibility = View.VISIBLE
+            }else if(visibility == View.GONE){
+                layout_toolbar.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun showToolbar(){
+
+    }
+
+    private fun hideToolbar(){
+
     }
 
     override fun onPause() {
