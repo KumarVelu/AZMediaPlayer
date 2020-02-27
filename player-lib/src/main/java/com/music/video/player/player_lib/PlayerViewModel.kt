@@ -34,7 +34,9 @@ class PlayerViewModel(
 
         val concatenatingMediaSource = ConcatenatingMediaSource()
         for (path in pathList){
-            val mediaSource = mediaSourceFactory.createMediaSource(Uri.parse(path))
+            val uri = Uri.parse(path)
+            val mediaSource = mediaSourceFactory
+                .createMediaSource(Uri.parse(path))
             concatenatingMediaSource.addMediaSource(mediaSource)
         }
 

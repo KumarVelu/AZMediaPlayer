@@ -10,8 +10,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import kotlinx.android.synthetic.main.activity_player.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 /**
  * A fullscreen activity to play audio or video streams.
@@ -20,11 +22,12 @@ class PlayerActivity : AppCompatActivity() {
 
     private var player: SimpleExoPlayer? = null
     private var playWhenReady = true
-    private var currentWindow = 0
+    private var currentWindow = -1
     private var playbackPosition = 0L
     private lateinit var viewModel: PlayerViewModel
 
     private lateinit var mediaPathList: ArrayList<String>
+    private lateinit var playbackStateListener: PlaybackStateListener
 
     companion object {
 
@@ -47,6 +50,7 @@ class PlayerActivity : AppCompatActivity() {
         currentWindow = intent.getIntExtra(EXTRAS_PLAY_POS, 0)
 
         initViewModel()
+        playbackStateListener = PlaybackStateListener()
     }
 
     private fun initViewModel() {
@@ -85,7 +89,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun initializePlayer() {
-        player = ExoPlayerFactory.newSimpleInstance(this)
+        player = SimpleExoPlayer.Builder(this).build()
         video_view.player = player
 
         player?.playWhenReady = playWhenReady
@@ -94,24 +98,25 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun initializeListeners() {
         initializeControllerVisibilityListeners()
+        player?.addListener(playbackStateListener)
     }
 
     private fun initializeControllerVisibilityListeners() {
         video_view.setControllerVisibilityListener{visibility ->
             if(visibility == View.VISIBLE){
-                layout_toolbar.visibility = View.VISIBLE
+                showToolbar()
             }else if(visibility == View.GONE){
-                layout_toolbar.visibility = View.GONE
+                hideToolbar()
             }
         }
     }
 
     private fun showToolbar(){
-
+        layout_toolbar.visibility = View.VISIBLE
     }
 
     private fun hideToolbar(){
-
+        layout_toolbar.visibility = View.GONE
     }
 
     override fun onPause() {
@@ -122,11 +127,31 @@ class PlayerActivity : AppCompatActivity() {
     private fun releasePlayer() {
 
         player?.let {
+            it.removeListener(playbackStateListener)
             playbackPosition = it.currentPosition
             currentWindow = it.currentWindowIndex
             playWhenReady = it.playWhenReady
             it.release()
             player = null
+        }
+
+    }
+
+    private inner class PlaybackStateListener: Player.EventListener{
+
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+
+        }
+
+        /* If you only want to detect playlist item changes, then it’s necessary to compare against the last known window index or tag,
+        because the onPositionDiscontinuity()  may be triggered for other reasons. */
+        override fun onPositionDiscontinuity(reason: Int) {
+            player?.let {
+                if(currentWindow != it.currentWindowIndex){
+                    currentWindow = it.currentWindowIndex
+                    tv_video_title.text = mediaPathList[currentWindow]
+                }
+            }
         }
 
     }
