@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.music.video.player.player_lib.gesture.MyGestureDetector
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.toolbar.*
 
@@ -51,6 +52,11 @@ class PlayerActivity : AppCompatActivity() {
 
         initViewModel()
         playbackStateListener = PlaybackStateListener()
+        initGestureListener()
+    }
+
+    private fun initGestureListener() {
+        MyGestureDetector(video_view)
     }
 
     private fun initViewModel() {
