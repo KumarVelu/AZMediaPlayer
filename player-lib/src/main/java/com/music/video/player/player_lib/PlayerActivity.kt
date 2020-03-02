@@ -12,6 +12,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.music.video.player.player_lib.data.model.VideoMetaData
 import com.music.video.player.player_lib.gesture.VideoGestureListener
 import com.music.video.player.player_lib.gesture.MyGestureDetector
 import kotlinx.android.synthetic.main.activity_player.*
@@ -28,7 +29,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
     private var playbackPosition = 0L
     private lateinit var viewModel: PlayerViewModel
 
-    private lateinit var mediaPathList: ArrayList<String>
+    private lateinit var videoMetaDataList: ArrayList<VideoMetaData>
     private lateinit var playbackStateListener: PlaybackStateListener
     private lateinit var audioManager: AudioManager
     private var maxSystemVolume = -1
@@ -38,13 +39,13 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
     companion object {
 
-        const val EXTRAS_MEDIA_PATH_LIST = "media_path_list"
+        const val EXTRAS_VIDEO_METADATA_LIST = "video_metadata_list"
         const val EXTRAS_PLAY_POS = "play_position"
         const val TAG = "PlayerActivity"
 
-        fun getStartIntent(context: Context, mediaPathList: ArrayList<String>, playPos: Int) =
+        fun getStartIntent(context: Context, videoMetaDataList: ArrayList<VideoMetaData>, playPos: Int) =
             Intent(context, PlayerActivity::class.java).apply {
-                putStringArrayListExtra(EXTRAS_MEDIA_PATH_LIST, mediaPathList)
+                putParcelableArrayListExtra(EXTRAS_VIDEO_METADATA_LIST, videoMetaDataList)
                 putExtra(EXTRAS_PLAY_POS, playPos)
             }
     }
@@ -53,7 +54,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        mediaPathList = intent.getStringArrayListExtra(EXTRAS_MEDIA_PATH_LIST)
+        videoMetaDataList = intent.getParcelableArrayListExtra(EXTRAS_VIDEO_METADATA_LIST)
         currentWindow = intent.getIntExtra(EXTRAS_PLAY_POS, 0)
 
         init()
@@ -63,7 +64,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
         initViewModel()
         playbackStateListener = PlaybackStateListener()
-        initGestureListener()
+//        initGestureListener()
         initAudioManager()
     }
 
@@ -72,7 +73,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
     }
 
     private fun initViewModel() {
-        val viewModelFactory = PlayerViewModelFactory(application, mediaPathList)
+        val viewModelFactory = PlayerViewModelFactory(application, videoMetaDataList)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(PlayerViewModel::class.java)
 
@@ -81,6 +82,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
     private fun setUpObservers() {
         viewModel.mediaSource.observe(this, Observer {
             player?.prepare(it, false, false)
+            setToolbarTitle()
         })
     }
 
@@ -189,11 +191,15 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
             player?.let {
                 if(currentWindow != it.currentWindowIndex){
                     currentWindow = it.currentWindowIndex
-                    tv_video_title.text = mediaPathList[currentWindow]
+                    setToolbarTitle()
                 }
             }
         }
 
+    }
+
+    private fun setToolbarTitle() {
+        tv_video_title.text = videoMetaDataList[currentWindow].title
     }
 
     override fun increaseVolume() {

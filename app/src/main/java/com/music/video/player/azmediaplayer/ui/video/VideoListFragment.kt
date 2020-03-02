@@ -10,6 +10,7 @@ import com.music.video.player.azmediaplayer.data.model.Video
 import com.music.video.player.azmediaplayer.di.component.FragmentComponent
 import com.music.video.player.azmediaplayer.ui.base.BaseFragment
 import com.music.video.player.player_lib.PlayerActivity
+import com.music.video.player.player_lib.data.model.VideoMetaData
 import kotlinx.android.synthetic.main.fragment_video_list.*
 import javax.inject.Inject
 
@@ -67,11 +68,11 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IIte
 
     @Suppress("UNCHECKED_CAST")
     override fun onItemClick(positon: Int) {
-        val videoPathList = arrayListOf<String>()
+        val videoMetaDataList = arrayListOf<VideoMetaData>()
         for(video in videoList){
-            videoPathList.add(video.path)
+            videoMetaDataList.add(VideoMetaData(video.title, video.path))
         }
-        startActivity(PlayerActivity.getStartIntent(context!!, videoPathList, positon))
+        startActivity(PlayerActivity.getStartIntent(context!!, videoMetaDataList, positon))
 
     }
 }

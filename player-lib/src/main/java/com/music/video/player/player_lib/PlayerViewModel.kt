@@ -9,11 +9,12 @@ import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DataSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.music.video.player.player_lib.data.model.VideoMetaData
 
 
 class PlayerViewModel(
     private val application: Application,
-    private val mediaPathList: List<String>
+    private val videoMetaDataList: List<VideoMetaData>
 ): ViewModel() {
 
     private val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(application, "az-media-player")
@@ -26,17 +27,15 @@ class PlayerViewModel(
     }
 
     private fun loadMediaSource() {
-        mediaSource.postValue(buildMediaSource(mediaPathList))
+        mediaSource.postValue(buildMediaSource())
     }
 
-
-    private fun buildMediaSource(pathList: List<String>): MediaSource{
+    private fun buildMediaSource(): MediaSource{
 
         val concatenatingMediaSource = ConcatenatingMediaSource()
-        for (path in pathList){
-            val uri = Uri.parse(path)
+        for (videoMetaData in videoMetaDataList){
             val mediaSource = mediaSourceFactory
-                .createMediaSource(Uri.parse(path))
+                .createMediaSource(Uri.parse(videoMetaData.path))
             concatenatingMediaSource.addMediaSource(mediaSource)
         }
 
