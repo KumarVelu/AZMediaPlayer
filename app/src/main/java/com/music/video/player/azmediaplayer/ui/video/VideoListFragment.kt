@@ -17,7 +17,7 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IIte
 
     companion object {
 
-        val TAG = "VideoListFragment"
+        const val TAG = "VideoListFragment"
 
         fun newInstance(): VideoListFragment {
             val args = Bundle()
@@ -28,7 +28,7 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IIte
     }
 
     @Inject
-    lateinit var linearLayouManager: LinearLayoutManager
+    lateinit var linearLayoutManager: LinearLayoutManager
 
     @Inject
     lateinit var videosAdapter: VideosAdapter
@@ -41,8 +41,10 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IIte
         fragmentComponent.inject(this)
 
     override fun setupView(view: View) {
+        toolbar_title.text = getString(R.string.app_name)
+
         rv_videos.apply {
-            layoutManager = linearLayouManager
+            layoutManager = linearLayoutManager
             adapter = videosAdapter
         }
     }

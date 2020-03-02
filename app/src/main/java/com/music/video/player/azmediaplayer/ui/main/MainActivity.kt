@@ -1,20 +1,22 @@
 package com.music.video.player.azmediaplayer.ui.main
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
 import com.music.video.player.azmediaplayer.R
 import com.music.video.player.azmediaplayer.di.component.ActivityComponent
 import com.music.video.player.azmediaplayer.ui.base.BaseActivity
-import com.music.video.player.azmediaplayer.ui.music.MusicListFragment
 import com.music.video.player.azmediaplayer.ui.video.VideoListFragment
-import kotlinx.android.synthetic.main.activity_main.view_pager
-import kotlinx.android.synthetic.main.activity_main.tab_layout
+import pub.devrel.easypermissions.AppSettingsDialog
+import pub.devrel.easypermissions.EasyPermissions
 
-class MainActivity : BaseActivity<MainViewModel>() {
+class MainActivity : BaseActivity<MainViewModel>(), EasyPermissions.PermissionCallbacks {
 
-    private lateinit var tabs: Array<String>
+    companion object {
+        private const val TAG = "MainActivity"
+        private const val RC_STORAGE_PERM = 101
+    }
 
     override fun provideLayoutId(): Int = R.layout.activity_main
 
@@ -22,15 +24,34 @@ class MainActivity : BaseActivity<MainViewModel>() {
         activityComponent.inject(this)
 
     override fun setupView(savedInstanceState: Bundle?) {
-        tabs = resources.getStringArray(R.array.main_tabs)
-        setupViewPager()
+        if (hasStoragePermission())
+            setUpVideoFragment()
+        else
+            requestStoragePermission()
     }
 
-    private fun setupViewPager() {
-        val viewPagerAdapter = ViewPagerAdapter(supportFragmentManager)
-        view_pager.adapter = viewPagerAdapter
-        tab_layout.setupWithViewPager(view_pager)
+    private fun requestStoragePermission() {
+        EasyPermissions.requestPermissions(
+            this,
+            getString(R.string.rationale_storage),
+            RC_STORAGE_PERM,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
 
+    private fun setUpVideoFragment() {
+        val fragmentTransaction = supportFragmentManager.beginTransaction()
+
+        var fragment =
+            supportFragmentManager.findFragmentByTag(VideoListFragment.TAG) as VideoListFragment?
+
+        if (fragment == null) {
+            fragment = VideoListFragment.newInstance()
+            fragmentTransaction.add(R.id.fragment_container, fragment, VideoListFragment.TAG)
+        } else {
+            fragmentTransaction.show(fragment)
+        }
+
+        fragmentTransaction.commit()
     }
 
     override fun setupObservers() {
@@ -38,33 +59,40 @@ class MainActivity : BaseActivity<MainViewModel>() {
 
     }
 
-    private inner class ViewPagerAdapter(fm: FragmentManager) :
-        FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    private fun hasStoragePermission() =
+        EasyPermissions.hasPermissions(
+            applicationContext,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
 
-        override fun getItem(position: Int): Fragment {
-
-            return when (tabs[position]) {
-                getString(R.string.video) -> VideoListFragment.newInstance()
-
-                getString(R.string.music) -> MusicListFragment.newInstance()
-
-                else -> VideoListFragment.newInstance()
+    @SuppressLint("StringFormatMatches")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
+            // check if storage permission is available and then proceed
+            if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                setUpVideoFragment()
             }
         }
+    }
 
-        override fun getCount(): Int = tabs.size
-
-        override fun getPageTitle(position: Int): CharSequence? {
-
-            return when (tabs[position]) {
-                getString(R.string.video) -> getString(R.string.video)
-
-                getString(R.string.music) -> getString(R.string.music)
-
-                else -> getString(R.string.video)
-            }
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+        if (EasyPermissions.somePermissionPermanentlyDenied(this, perms)) {
+            AppSettingsDialog.Builder(this).build().show()
+        }else{
+            finish()
         }
+    }
 
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+        setUpVideoFragment()
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,
+                                            grantResults: IntArray) {
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
 }
