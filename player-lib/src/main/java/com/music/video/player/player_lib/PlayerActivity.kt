@@ -3,15 +3,16 @@ package com.music.video.player.player_lib
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.music.video.player.player_lib.gesture.VideoGestureListener
 import com.music.video.player.player_lib.gesture.MyGestureDetector
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.toolbar.*
 /**
  * A fullscreen activity to play audio or video streams.
  */
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
     private var player: SimpleExoPlayer? = null
     private var playWhenReady = true
@@ -29,6 +30,11 @@ class PlayerActivity : AppCompatActivity() {
 
     private lateinit var mediaPathList: ArrayList<String>
     private lateinit var playbackStateListener: PlaybackStateListener
+    private lateinit var audioManager: AudioManager
+    private var maxSystemVolume = -1
+    private var minSystemVolume = -1
+    private var currentVolume = -1
+    private var gestureDetector: MyGestureDetector? = null
 
     companion object {
 
@@ -50,13 +56,19 @@ class PlayerActivity : AppCompatActivity() {
         mediaPathList = intent.getStringArrayListExtra(EXTRAS_MEDIA_PATH_LIST)
         currentWindow = intent.getIntExtra(EXTRAS_PLAY_POS, 0)
 
+        init()
+    }
+
+    private fun init() {
+
         initViewModel()
         playbackStateListener = PlaybackStateListener()
         initGestureListener()
+        initAudioManager()
     }
 
     private fun initGestureListener() {
-        MyGestureDetector(video_view)
+        gestureDetector = MyGestureDetector(video_view, this)
     }
 
     private fun initViewModel() {
@@ -130,6 +142,23 @@ class PlayerActivity : AppCompatActivity() {
         releasePlayer()
     }
 
+    private fun initAudioManager(){
+        audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
+
+        maxSystemVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
+
+        minSystemVolume = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            audioManager.getStreamMinVolume(AudioManager.STREAM_MUSIC)
+        } else {
+            0
+        }
+
+        currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+
+        pb_volume.max = maxSystemVolume
+        pb_volume.progress = currentVolume
+    }
+
     private fun releasePlayer() {
 
         player?.let {
@@ -141,6 +170,11 @@ class PlayerActivity : AppCompatActivity() {
             player = null
         }
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        gestureDetector = null
     }
 
     private inner class PlaybackStateListener: Player.EventListener{
@@ -159,6 +193,45 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
         }
+
+    }
+
+    override fun increaseVolume() {
+
+        if (currentVolume <= maxSystemVolume) {
+            ++currentVolume
+        }
+
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
+
+        pb_volume.progress = currentVolume
+        pb_volume.visibility = View.VISIBLE
+    }
+
+    override fun decreaseVolume() {
+        if (currentVolume >= minSystemVolume) {
+            --currentVolume
+        }
+
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
+
+        pb_volume.progress = currentVolume
+        pb_volume.visibility = View.VISIBLE
+    }
+
+    override fun increaseBrightness() {
+
+    }
+
+    override fun decreaseBrightness() {
+
+    }
+
+    override fun seekForward() {
+
+    }
+
+    override fun seekBackward() {
 
     }
 

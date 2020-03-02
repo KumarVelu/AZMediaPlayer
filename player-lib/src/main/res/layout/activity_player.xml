@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PlayerActivity"
     android:background="#000000"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    tools:context=".PlayerActivity">
 
     <com.google.android.exoplayer2.ui.PlayerView
         android:id="@+id/video_view"
@@ -15,7 +15,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/pb_volume"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="10dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="32dp"
+        android:progressDrawable="@drawable/progressbar_states_volume"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/layout_toolbar"
