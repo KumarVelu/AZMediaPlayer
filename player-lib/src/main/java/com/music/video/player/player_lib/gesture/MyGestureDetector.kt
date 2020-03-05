@@ -35,6 +35,7 @@ class MyGestureDetector(private val view: View, private val videoGestureListener
                 if (event.action == MotionEvent.ACTION_UP) {
                     // gesture stopped.
                     resetAllGestureValues()
+                    videoGestureListener.onGestureEnd()
                 }else{
                     gestureDetector.onTouchEvent(event)
                 }
@@ -70,9 +71,9 @@ class MyGestureDetector(private val view: View, private val videoGestureListener
                     if (verticalGestureMove != GestureMove.NONE) {
 
                         if (e1.x.toInt() < ScreenUtils.leftHalf()) {
-                            activeGesture = GestureType.VOLUME
-                        } else if (e1.x.toInt() > ScreenUtils.rightHalf()) {
                             activeGesture = GestureType.BRIGHTNESS
+                        } else if (e1.x.toInt() > ScreenUtils.rightHalf()) {
+                            activeGesture = GestureType.VOLUME
                         }
 
                     } else {

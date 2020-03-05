@@ -7,6 +7,7 @@ import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -35,7 +36,9 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
     private var maxSystemVolume = -1
     private var minSystemVolume = -1
     private var currentVolume = -1
+    private var currentBrightness = 0f
     private var gestureDetector: MyGestureDetector? = null
+    private lateinit var layoutParams: WindowManager.LayoutParams
 
     companion object {
 
@@ -64,8 +67,9 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
         initViewModel()
         playbackStateListener = PlaybackStateListener()
-//        initGestureListener()
+        initGestureListener()
         initAudioManager()
+        initWindowAttrForScreenBrightness()
     }
 
     private fun initGestureListener() {
@@ -161,6 +165,13 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         pb_volume.progress = currentVolume
     }
 
+    private fun initWindowAttrForScreenBrightness(){
+        layoutParams = window.attributes
+        // todo : have to change this logic. Have to persist screen brightness value and use that.
+        currentBrightness = if(window.attributes.screenBrightness == -1f) 0.5f else window.attributes.screenBrightness
+        pb_brightness.progress = (currentBrightness * 100).toInt()
+    }
+
     private fun releasePlayer() {
 
         player?.let {
@@ -206,30 +217,52 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
         if (currentVolume <= maxSystemVolume) {
             ++currentVolume
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
         }
 
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
-
-        pb_volume.progress = currentVolume
         pb_volume.visibility = View.VISIBLE
+        pb_volume.progress = currentVolume
     }
 
     override fun decreaseVolume() {
         if (currentVolume >= minSystemVolume) {
             --currentVolume
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
         }
 
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
-
-        pb_volume.progress = currentVolume
         pb_volume.visibility = View.VISIBLE
+        pb_volume.progress = currentVolume
+
     }
 
     override fun increaseBrightness() {
 
+        if(currentBrightness < 1.0f){
+
+            currentBrightness += 0.05f
+            if(currentBrightness > 1.0f) currentBrightness = 1.0f
+
+            layoutParams.screenBrightness = currentBrightness
+            window.attributes = layoutParams
+            pb_brightness.progress = (currentBrightness * 100).toInt()
+        }
+
+        pb_brightness.visibility = View.VISIBLE
     }
 
     override fun decreaseBrightness() {
+
+        if(currentBrightness > 0f){
+
+            currentBrightness -= 0.05f
+            if(currentBrightness < 0f) currentBrightness = 0f
+
+            layoutParams.screenBrightness = currentBrightness
+            window.attributes = layoutParams
+            pb_brightness.progress = (currentBrightness * 100).toInt()
+        }
+
+        pb_brightness.visibility = View.VISIBLE
 
     }
 
@@ -239,6 +272,11 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
     override fun seekBackward() {
 
+    }
+
+    override fun onGestureEnd() {
+        pb_brightness.visibility = View.GONE
+        pb_volume.visibility = View.GONE
     }
 
 }

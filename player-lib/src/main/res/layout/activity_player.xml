@@ -30,6 +30,19 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
 
+    <ProgressBar
+        android:id="@+id/pb_brightness"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="10dp"
+        android:layout_height="150dp"
+        android:layout_marginEnd="32dp"
+        android:progressDrawable="@drawable/progressbar_states_brightness"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/video_view"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
     <include
         android:id="@+id/layout_toolbar"
         layout="@layout/toolbar" />

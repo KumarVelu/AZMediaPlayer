@@ -13,4 +13,6 @@ interface VideoGestureListener {
     fun seekForward()
 
     fun seekBackward()
+
+    fun onGestureEnd()
 }
