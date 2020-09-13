@@ -6,16 +6,24 @@ import android.content.Intent
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.SeekBar
+import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.Timeline
+import com.google.android.exoplayer2.ui.DefaultTimeBar
+import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ui.TimeBar
 import com.music.video.player.player_lib.data.model.VideoMetaData
-import com.music.video.player.player_lib.gesture.VideoGestureListener
 import com.music.video.player.player_lib.gesture.MyGestureDetector
+import com.music.video.player.player_lib.gesture.VideoGestureListener
+import com.music.video.player.player_lib.utils.constants.Constants
 import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.toolbar.*
 
@@ -116,8 +124,28 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         player = SimpleExoPlayer.Builder(this).build()
         video_view.player = player
 
+        val timeBar = video_view.findViewById<DefaultTimeBar>(R.id.exo_progress)
+
+        timeBar.addListener(object : TimeBar.OnScrubListener {
+            override fun onScrubMove(timeBar: TimeBar, position: Long) {
+                Log.i(TAG, "onScrubMove: $position")
+                player?.seekTo(position)
+            }
+
+            override fun onScrubStart(timeBar: TimeBar, position: Long) {
+
+            }
+
+            override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
+
+            }
+
+        })
+
         player?.playWhenReady = playWhenReady
         player?.seekTo(currentWindow, playbackPosition)
+
+        player?.seekParameters
     }
 
     private fun initializeListeners() {
@@ -203,8 +231,21 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
                 if(currentWindow != it.currentWindowIndex){
                     currentWindow = it.currentWindowIndex
                     setToolbarTitle()
+                    video_view.setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
                 }
             }
+        }
+
+        override fun onIsPlayingChanged(isPlaying: Boolean) {
+            if(isPlaying){
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }else{
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
+        }
+
+        override fun onTimelineChanged(timeline: Timeline, reason: Int) {
+            Log.i(TAG, "onTimelineChanged: $timeline, reason : $reason")
         }
 
     }
@@ -267,11 +308,19 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
     }
 
     override fun seekForward() {
-
+        player?.let {
+            if(it.currentPosition < it.duration){
+                it.seekTo(it.currentPosition + Constants.DEFAULT_SEEK_TIME)
+            }
+        }
     }
 
     override fun seekBackward() {
-
+        player?.let {
+            if(it.currentPosition > 0){
+                it.seekTo(it.currentPosition - Constants.DEFAULT_SEEK_TIME)
+            }
+        }
     }
 
     override fun onGestureEnd() {
