@@ -1,15 +1,13 @@
 package com.music.video.player.azmediaplayer.di.module
 
-import android.content.Context
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.music.video.player.azmediaplayer.data.repository.VideoRepository
-import com.music.video.player.azmediaplayer.di.ActivityContext
 import com.music.video.player.azmediaplayer.ui.base.BaseFragment
 import com.music.video.player.azmediaplayer.ui.home.HomeViewModel
 import com.music.video.player.azmediaplayer.ui.music.MusicListViewModel
 import com.music.video.player.azmediaplayer.ui.video.VideoListViewModel
-import com.music.video.player.azmediaplayer.ui.video.VideosAdapter
+import com.music.video.player.azmediaplayer.ui.video.VideoListAdapter
 import com.music.video.player.azmediaplayer.utils.ViewModelProviderFactory
 import com.music.video.player.azmediaplayer.utils.rx.SchedulerProvider
 import dagger.Module
@@ -23,7 +21,7 @@ class FragmentModule(private val fragment: BaseFragment<*>) {
     fun provideLinearLayoutManager() = LinearLayoutManager(fragment.context)
 
     @Provides
-    fun provideVideosAdapter() = VideosAdapter(fragment.lifecycle, ArrayList(), fragment as VideosAdapter.IItemClickListener)
+    fun provideVideosAdapter() = VideoListAdapter(fragment.lifecycle, ArrayList(), fragment as VideoListAdapter.IItemClickListener)
 
     @Provides
     fun provideMainViewModel(

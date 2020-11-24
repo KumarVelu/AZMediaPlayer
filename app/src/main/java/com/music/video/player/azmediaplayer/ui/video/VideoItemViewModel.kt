@@ -17,7 +17,7 @@ class VideoItemViewModel @Inject constructor(
 
     }
 
-    val title: LiveData<String> = Transformations.map(data) { it.title }
+    val title: LiveData<String> = Transformations.map(data) { it.displayName }
     val duration: LiveData<Long> = Transformations.map(data) { it.durationInMs }
     val path: LiveData<String> = Transformations.map(data) { it.path }
 

@@ -21,7 +21,7 @@ class VideoRepository @Inject constructor(
     }
 
     private val videoListProjection = arrayOf(
-        MediaStore.Video.Media._ID, MediaStore.Video.Media.TITLE,
+        MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME,
         MediaStore.Video.Media.DURATION, MediaStore.Video.Media.DATA
     )
 
@@ -44,11 +44,11 @@ class VideoRepository @Inject constructor(
             videoCursor?.let {
                 while (it.moveToNext()){
                     val videoId = it.getLong(it.getColumnIndex(MediaStore.Video.Media._ID))
-                    val title = it.getString(it.getColumnIndex(MediaStore.Video.Media.TITLE))
+                    val displayName = it.getString(it.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME))
                     val duration = it.getLong(it.getColumnIndex(MediaStore.Video.Media.DURATION))
                     val path = it.getString(it.getColumnIndex(MediaStore.Video.Media.DATA))
 
-                    videoList.add(Video(videoId, title, duration, path))
+                    videoList.add(Video(videoId, displayName, duration, path))
                 }
             }
         }catch (e: Exception){

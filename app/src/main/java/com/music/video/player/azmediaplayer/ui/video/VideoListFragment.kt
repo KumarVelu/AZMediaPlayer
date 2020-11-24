@@ -14,7 +14,7 @@ import com.music.video.player.player_lib.data.model.VideoMetaData
 import kotlinx.android.synthetic.main.fragment_video_list.*
 import javax.inject.Inject
 
-class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IItemClickListener {
+class VideoListFragment : BaseFragment<VideoListViewModel>(), VideoListAdapter.IItemClickListener {
 
     companion object {
 
@@ -32,7 +32,7 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IIte
     lateinit var linearLayoutManager: LinearLayoutManager
 
     @Inject
-    lateinit var videosAdapter: VideosAdapter
+    lateinit var videoListAdapter: VideoListAdapter
 
     private var videoList: List<Video> = mutableListOf()
 
@@ -46,7 +46,7 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IIte
 
         rv_videos.apply {
             layoutManager = linearLayoutManager
-            adapter = videosAdapter
+            adapter = videoListAdapter
         }
     }
 
@@ -61,7 +61,7 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IIte
             Log.i(TAG, "setupObservers: $it")
             it.data?.run {
                 videoList = this
-                videosAdapter.appendData(videoList)
+                videoListAdapter.appendData(videoList)
             }
         })
     }
@@ -70,7 +70,7 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideosAdapter.IIte
     override fun onItemClick(positon: Int) {
         val videoMetaDataList = arrayListOf<VideoMetaData>()
         for(video in videoList){
-            videoMetaDataList.add(VideoMetaData(video.title, video.path))
+            videoMetaDataList.add(VideoMetaData(video.displayName, video.path))
         }
         startActivity(PlayerActivity.getStartIntent(context!!, videoMetaDataList, positon))
 

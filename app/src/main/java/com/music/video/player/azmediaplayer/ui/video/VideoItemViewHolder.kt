@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.item_view_video.view.*
 
 class VideoItemViewHolder(
     private val parent: ViewGroup,
-    private val itemClickListener: VideosAdapter.IItemClickListener
+    private val itemClickListener: VideoListAdapter.IItemClickListener
 ) : BaseItemViewHolder<Video, VideoItemViewModel>(R.layout.item_view_video, parent) {
 
     override fun injectDependencies(viewHolderComponent: ViewHolderComponent) {
