@@ -8,7 +8,6 @@ import androidx.annotation.WorkerThread
 import com.music.video.player.azmediaplayer.data.model.Video
 import com.music.video.player.azmediaplayer.di.ApplicationContext
 import com.music.video.player.azmediaplayer.utils.DBUtils
-import io.reactivex.Single
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -26,7 +25,7 @@ class VideoRepository @Inject constructor(
     )
 
     @WorkerThread
-    fun fetchAllVideos(): Single<List<Video>> {
+    fun fetchAllVideos(): List<Video> {
 
         val videoList = mutableListOf<Video>()
 
@@ -58,7 +57,7 @@ class VideoRepository @Inject constructor(
             DBUtils.closeCurosr(videoCursor)
         }
 
-        return Single.create<List<Video>> { it.onSuccess(videoList) }
+        return videoList
     }
 
 }

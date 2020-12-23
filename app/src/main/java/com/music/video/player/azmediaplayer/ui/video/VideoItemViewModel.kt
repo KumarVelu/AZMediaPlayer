@@ -4,14 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
 import com.music.video.player.azmediaplayer.data.model.Video
 import com.music.video.player.azmediaplayer.ui.base.BaseItemViewModel
-import com.music.video.player.azmediaplayer.utils.rx.SchedulerProvider
-import io.reactivex.disposables.CompositeDisposable
 import javax.inject.Inject
 
 class VideoItemViewModel @Inject constructor(
-    schedulerProvider: SchedulerProvider,
-    compositeDisposable: CompositeDisposable
-): BaseItemViewModel<Video>(schedulerProvider, compositeDisposable) {
+): BaseItemViewModel<Video>() {
 
     override fun onCreate() {
 

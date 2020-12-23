@@ -1,6 +1,6 @@
 package com.music.video.player.azmediaplayer.di.module
 
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.music.video.player.azmediaplayer.data.repository.VideoRepository
 import com.music.video.player.azmediaplayer.ui.base.BaseFragment
@@ -9,10 +9,8 @@ import com.music.video.player.azmediaplayer.ui.music.MusicListViewModel
 import com.music.video.player.azmediaplayer.ui.video.VideoListViewModel
 import com.music.video.player.azmediaplayer.ui.video.VideoListAdapter
 import com.music.video.player.azmediaplayer.utils.ViewModelProviderFactory
-import com.music.video.player.azmediaplayer.utils.rx.SchedulerProvider
 import dagger.Module
 import dagger.Provides
-import io.reactivex.disposables.CompositeDisposable
 
 @Module
 class FragmentModule(private val fragment: BaseFragment<*>) {
@@ -24,31 +22,24 @@ class FragmentModule(private val fragment: BaseFragment<*>) {
     fun provideVideosAdapter() = VideoListAdapter(fragment.lifecycle, ArrayList(), fragment as VideoListAdapter.IItemClickListener)
 
     @Provides
-    fun provideMainViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable
-    ): HomeViewModel = ViewModelProviders.of(
+    fun provideMainViewModel(): HomeViewModel = ViewModelProvider(
         fragment, ViewModelProviderFactory(HomeViewModel::class) {
-            HomeViewModel(schedulerProvider, compositeDisposable)
+            HomeViewModel()
         }).get(HomeViewModel::class.java)
 
     @Provides
     fun provideVideoListViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable,
         videoRepository: VideoRepository
-    ): VideoListViewModel = ViewModelProviders.of(
+    ): VideoListViewModel = ViewModelProvider(
         fragment, ViewModelProviderFactory(VideoListViewModel::class) {
-            VideoListViewModel(schedulerProvider, compositeDisposable, videoRepository)
+            VideoListViewModel(videoRepository)
         }).get(VideoListViewModel::class.java)
 
     @Provides
     fun provideMusicListViewModel(
-        schedulerProvider: SchedulerProvider,
-        compositeDisposable: CompositeDisposable
-    ): MusicListViewModel = ViewModelProviders.of(
+    ): MusicListViewModel = ViewModelProvider(
         fragment, ViewModelProviderFactory(MusicListViewModel::class) {
-            MusicListViewModel(schedulerProvider, compositeDisposable)
+            MusicListViewModel()
         }).get(MusicListViewModel::class.java)
 
 }
