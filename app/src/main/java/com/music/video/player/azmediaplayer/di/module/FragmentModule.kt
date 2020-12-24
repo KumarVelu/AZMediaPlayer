@@ -19,7 +19,7 @@ class FragmentModule(private val fragment: BaseFragment<*>) {
     fun provideLinearLayoutManager() = LinearLayoutManager(fragment.context)
 
     @Provides
-    fun provideVideosAdapter() = VideoListAdapter(fragment.lifecycle, ArrayList(), fragment as VideoListAdapter.IItemClickListener)
+    fun provideVideosAdapter() = VideoListAdapter(fragment.context!!, fragment as VideoListAdapter.IItemClickListener)
 
     @Provides
     fun provideMainViewModel(): HomeViewModel = ViewModelProvider(

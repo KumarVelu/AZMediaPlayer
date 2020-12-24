@@ -2,7 +2,6 @@ package com.music.video.player.azmediaplayer
 
 import android.app.Application
 import com.music.video.player.azmediaplayer.data.local.DatabaseService
-import com.music.video.player.azmediaplayer.data.remote.NetworkService
 import com.music.video.player.azmediaplayer.di.component.ApplicationComponent
 import com.music.video.player.azmediaplayer.di.component.DaggerApplicationComponent
 import com.music.video.player.azmediaplayer.di.module.ApplicationModule
@@ -12,9 +11,6 @@ import javax.inject.Inject
 class MyApplication : Application() {
 
     lateinit var applicationComponent: ApplicationComponent
-
-    @Inject
-    lateinit var networkService: NetworkService
 
     @Inject
     lateinit var databaseService: DatabaseService

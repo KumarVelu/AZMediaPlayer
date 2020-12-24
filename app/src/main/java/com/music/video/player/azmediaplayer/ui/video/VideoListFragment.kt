@@ -6,7 +6,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.music.video.player.azmediaplayer.R
-import com.music.video.player.azmediaplayer.data.model.Video
+import com.music.video.player.azmediaplayer.data.model.AdapterItem
 import com.music.video.player.azmediaplayer.di.component.FragmentComponent
 import com.music.video.player.azmediaplayer.ui.base.BaseFragment
 import com.music.video.player.player_lib.PlayerActivity
@@ -34,7 +34,7 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideoListAdapter.I
     @Inject
     lateinit var videoListAdapter: VideoListAdapter
 
-    private var videoList: List<Video> = mutableListOf()
+    private var adapterItemList: List<AdapterItem> = mutableListOf()
 
     override fun provideLayoutId(): Int = R.layout.fragment_video_list
 
@@ -57,22 +57,24 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideoListAdapter.I
             pb_loading.visibility = if (it) View.VISIBLE else View.GONE
         })
 
-        viewModel.videoList.observe(this, Observer {
+        viewModel.adapterItemListLiveData.observe(this, Observer {
             Log.i(TAG, "setupObservers: $it")
             it.data?.run {
-                videoList = this
-                videoListAdapter.appendData(videoList)
+                adapterItemList = this
+                videoListAdapter.adapterItemList = this@VideoListFragment.adapterItemList
             }
         })
     }
 
     @Suppress("UNCHECKED_CAST")
-    override fun onItemClick(positon: Int) {
+    override fun onItemClick(position: Int) {
         val videoMetaDataList = arrayListOf<VideoMetaData>()
-        for(video in videoList){
-            videoMetaDataList.add(VideoMetaData(video.displayName, video.path))
-        }
-        startActivity(PlayerActivity.getStartIntent(context!!, videoMetaDataList, positon))
 
+        adapterItemList.forEach {
+            if(it is AdapterItem.Video){
+                videoMetaDataList.add(VideoMetaData(it.displayName, it.path))
+            }
+        }
+        startActivity(PlayerActivity.getStartIntent(context!!, videoMetaDataList, position))
     }
 }

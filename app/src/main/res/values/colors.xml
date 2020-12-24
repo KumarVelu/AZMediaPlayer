@@ -11,4 +11,6 @@
     <color name="black_50">#CC000000</color>
 
     <color name="activity_bg">@color/black</color>
+
+    <color name="secondaryTextColor">@color/grey</color>
 </resources>

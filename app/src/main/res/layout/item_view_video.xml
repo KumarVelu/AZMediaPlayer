@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:padding="16dp">
 
     <ImageView
         android:id="@+id/iv_video_thumbnail"
@@ -18,9 +18,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="4dp"
+        android:background="@drawable/shape_rectangle_black50"
         app:layout_constraintBottom_toBottomOf="@+id/iv_video_thumbnail"
-        app:layout_constraintEnd_toEndOf="@+id/iv_video_thumbnail"
-        android:background="@drawable/shape_rectangle_black50">
+        app:layout_constraintEnd_toEndOf="@+id/iv_video_thumbnail">
 
         <ImageView
             android:id="@+id/imagePlay"
@@ -35,11 +35,11 @@
             android:id="@+id/tv_duration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
             android:padding="2dp"
+            android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/imagePlay"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             tools:text="04:23" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -53,10 +53,38 @@
         android:layout_marginEnd="16dp"
         android:ellipsize="end"
         android:maxLines="2"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_video_thumbnail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/iv_video_thumbnail"
         app:layout_constraintTop_toTopOf="@+id/iv_video_thumbnail"
         tools:text="VID_023444_56789" />
+
+    <TextView
+        android:id="@+id/tvResolutionFileSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/tv_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        tools:text="144p | 160.23KB"
+        android:textColor="@color/secondaryTextColor"/>
+
+    <ImageView
+        android:id="@+id/imageFolderAppIcon"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/tvResolutionFileSize"
+        app:layout_constraintTop_toBottomOf="@+id/tvResolutionFileSize" />
+
+    <TextView
+        android:id="@+id/tvFolderName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageFolderAppIcon"
+        app:layout_constraintStart_toEndOf="@+id/imageFolderAppIcon"
+        app:layout_constraintTop_toTopOf="@+id/imageFolderAppIcon"
+        tools:text="WhatsApp"
+        android:textColor="@color/secondaryTextColor"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

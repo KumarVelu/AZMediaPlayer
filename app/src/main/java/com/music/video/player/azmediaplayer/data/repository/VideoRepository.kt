@@ -5,9 +5,11 @@ import android.database.Cursor
 import android.provider.MediaStore
 import android.util.Log
 import androidx.annotation.WorkerThread
-import com.music.video.player.azmediaplayer.data.model.Video
+import com.music.video.player.azmediaplayer.data.model.AdapterItem
 import com.music.video.player.azmediaplayer.di.ApplicationContext
 import com.music.video.player.azmediaplayer.utils.DBUtils
+import com.music.video.player.azmediaplayer.utils.TimerUtils
+import com.music.video.player.azmediaplayer.utils.common.FileUtil
 import java.lang.Exception
 import javax.inject.Inject
 
@@ -21,13 +23,14 @@ class VideoRepository @Inject constructor(
 
     private val videoListProjection = arrayOf(
         MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME,
-        MediaStore.Video.Media.DURATION, MediaStore.Video.Media.DATA
+        MediaStore.Video.Media.DURATION, MediaStore.Video.Media.DATA,
+        MediaStore.Video.Media.DATE_ADDED, MediaStore.Video.Media.SIZE
     )
 
     @WorkerThread
-    fun fetchAllVideos(): List<Video> {
+    fun fetchAllVideos(): List<AdapterItem.Video> {
 
-        val videoList = mutableListOf<Video>()
+        val videoList = mutableListOf<AdapterItem.Video>()
 
         var videoCursor: Cursor? = null
 
@@ -46,8 +49,19 @@ class VideoRepository @Inject constructor(
                     val displayName = it.getString(it.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME))
                     val duration = it.getLong(it.getColumnIndex(MediaStore.Video.Media.DURATION))
                     val path = it.getString(it.getColumnIndex(MediaStore.Video.Media.DATA))
+                    val dateAdded = it.getLong(it.getColumnIndex(MediaStore.Video.Media.DATE_ADDED))
+                    val fileSize = it.getLong(it.getColumnIndex(MediaStore.Video.Media.SIZE))
 
-                    videoList.add(Video(videoId, displayName, duration, path))
+                    videoList.add(
+                        AdapterItem.Video(
+                            videoId,
+                            displayName,
+                            duration,
+                            path,
+                            dateAdded,
+                            FileUtil.getReadableFileSize(fileSize)
+                        )
+                    )
                 }
             }
         }catch (e: Exception){
