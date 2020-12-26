@@ -14,8 +14,19 @@ import kotlinx.android.synthetic.main.item_view_video.view.*
 import java.io.File
 
 class VideoItemViewHolder(
-    itemView: View
+    itemView: View,
+    iItemClickListener: VideoListAdapter.IItemClickListener
 ) : RecyclerView.ViewHolder(itemView) {
+
+    init {
+        itemView.setOnClickListener{
+            iItemClickListener.onItemClick(adapterPosition)
+        }
+
+        itemView.imageOverflowMenu.setOnClickListener{
+            iItemClickListener.onOverFlowMenuClick(adapterPosition)
+        }
+    }
 
     fun bind(video: AdapterItem.Video) {
 

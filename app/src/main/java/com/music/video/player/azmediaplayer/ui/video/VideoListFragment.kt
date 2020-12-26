@@ -70,11 +70,23 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideoListAdapter.I
     override fun onItemClick(position: Int) {
         val videoMetaDataList = arrayListOf<VideoMetaData>()
 
+        var headerItemsToIgnore = 0
+
         adapterItemList.forEach {
-            if(it is AdapterItem.Video){
+            if (it is AdapterItem.Video) {
                 videoMetaDataList.add(VideoMetaData(it.displayName, it.path))
-            }
+            } else if ((headerItemsToIgnore + videoMetaDataList.size < position) && it is AdapterItem.SectionItem) headerItemsToIgnore++
         }
-        startActivity(PlayerActivity.getStartIntent(context!!, videoMetaDataList, position))
+        startActivity(
+            PlayerActivity.getStartIntent(
+                context!!,
+                videoMetaDataList,
+                (position - headerItemsToIgnore)
+            )
+        )
+    }
+
+    override fun onOverFlowMenuClick(position: Int) {
+        showMessage("Overflow menu click $position")
     }
 }

@@ -87,4 +87,12 @@
         tools:text="WhatsApp"
         android:textColor="@color/secondaryTextColor"/>
 
+    <ImageView
+        android:id="@+id/imageOverflowMenu"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/ic_action_more_vert"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -31,7 +31,7 @@ class VideoListAdapter(
                     R.layout.item_view_video,
                     parent,
                     false
-                )
+                ), itemClickListener
             )
 
             TYPE_HEADER -> VideoSectionItemViewHolder(
@@ -48,6 +48,8 @@ class VideoListAdapter(
 
     interface IItemClickListener {
         fun onItemClick(position: Int)
+
+        fun onOverFlowMenuClick(position: Int)
     }
 
     override fun getItemCount(): Int = adapterItemList.size
