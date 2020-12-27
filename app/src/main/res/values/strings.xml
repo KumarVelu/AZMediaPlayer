@@ -11,5 +11,8 @@
     <string name="music">Music</string>
 
     <string name="rationale_storage">This app needs access to your storage to access Video files.</string>
+    <string name="delete">Delete</string>
+    <string name="share">Share</string>
+    <string name="file_info">File Info</string>
 
 </resources>

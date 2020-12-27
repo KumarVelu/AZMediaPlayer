@@ -27,6 +27,14 @@ object TimerUtils {
         val calendar = Calendar.getInstance()
         calendar.timeInMillis = dateAddedInMillis * 1000
 
+        val currDayCalendar = Calendar.getInstance()
+
+        if(calendar.get(Calendar.DAY_OF_MONTH) == currDayCalendar.get(Calendar.DAY_OF_MONTH)){
+            return "Today"
+        }else if(calendar.get(Calendar.DAY_OF_MONTH) == currDayCalendar.get(Calendar.DAY_OF_MONTH) - 1){
+            return "Yesterday"
+        }
+
         val date = if(calendar.get(Calendar.DAY_OF_MONTH) < 10){
             "0${calendar.get(Calendar.DAY_OF_MONTH)}"
         }else{
@@ -35,7 +43,7 @@ object TimerUtils {
 
         val month = DateFormatSymbols().shortMonths[calendar.get(Calendar.MONTH)]
 
-        return if(calendar.get(Calendar.YEAR) == Calendar.getInstance().get(Calendar.YEAR)){
+        return if(calendar.get(Calendar.YEAR) == currDayCalendar.get(Calendar.YEAR)){
             "$date $month"
         }else{
             "$date $month ${calendar.get(Calendar.YEAR)}"

@@ -2,11 +2,13 @@ package com.music.video.player.azmediaplayer.ui.main
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import com.music.video.player.azmediaplayer.R
 import com.music.video.player.azmediaplayer.di.component.ActivityComponent
 import com.music.video.player.azmediaplayer.ui.base.BaseActivity
+import com.music.video.player.azmediaplayer.ui.delete.DeleteHelper
 import com.music.video.player.azmediaplayer.ui.video.VideoListFragment
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -17,6 +19,8 @@ class MainActivity : BaseActivity<MainViewModel>(), EasyPermissions.PermissionCa
         private const val TAG = "MainActivity"
         private const val RC_STORAGE_PERM = 101
     }
+
+    private var mVideoListFragment: VideoListFragment? = null
 
     override fun provideLayoutId(): Int = R.layout.activity_main
 
@@ -41,14 +45,14 @@ class MainActivity : BaseActivity<MainViewModel>(), EasyPermissions.PermissionCa
     private fun setUpVideoFragment() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
 
-        var fragment =
+        mVideoListFragment =
             supportFragmentManager.findFragmentByTag(VideoListFragment.TAG) as VideoListFragment?
 
-        if (fragment == null) {
-            fragment = VideoListFragment.newInstance()
-            fragmentTransaction.add(R.id.fragment_container, fragment, VideoListFragment.TAG)
+        if (mVideoListFragment == null) {
+            mVideoListFragment = VideoListFragment.newInstance()
+            fragmentTransaction.add(R.id.fragment_container, mVideoListFragment!!, VideoListFragment.TAG)
         } else {
-            fragmentTransaction.show(fragment)
+            fragmentTransaction.show(mVideoListFragment!!)
         }
 
         fragmentTransaction.commit()
@@ -67,13 +71,15 @@ class MainActivity : BaseActivity<MainViewModel>(), EasyPermissions.PermissionCa
 
     @SuppressLint("StringFormatMatches")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
             // check if storage permission is available and then proceed
             if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 setUpVideoFragment()
             }
+        }else if(requestCode == DeleteHelper.REQUEST_PERM_DELETE && resultCode == Activity.RESULT_OK){
+            mVideoListFragment?.onActivityResult(requestCode, resultCode, data)
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {

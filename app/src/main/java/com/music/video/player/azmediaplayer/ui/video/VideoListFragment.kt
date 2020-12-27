@@ -1,14 +1,18 @@
 package com.music.video.player.azmediaplayer.ui.video
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.music.video.player.azmediaplayer.R
 import com.music.video.player.azmediaplayer.data.model.AdapterItem
 import com.music.video.player.azmediaplayer.di.component.FragmentComponent
 import com.music.video.player.azmediaplayer.ui.base.BaseFragment
+import com.music.video.player.azmediaplayer.ui.delete.DeleteHelper
 import com.music.video.player.player_lib.PlayerActivity
 import com.music.video.player.player_lib.data.model.VideoMetaData
 import kotlinx.android.synthetic.main.fragment_video_list.*
@@ -34,7 +38,8 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideoListAdapter.I
     @Inject
     lateinit var videoListAdapter: VideoListAdapter
 
-    private var adapterItemList: List<AdapterItem> = mutableListOf()
+    private var adapterItemList = mutableListOf<AdapterItem>()
+    private var mOverflowItemClickPos = -1
 
     override fun provideLayoutId(): Int = R.layout.fragment_video_list
 
@@ -87,6 +92,20 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideoListAdapter.I
     }
 
     override fun onOverFlowMenuClick(position: Int) {
-        showMessage("Overflow menu click $position")
+        mOverflowItemClickPos = position
+        val video = adapterItemList[position] as AdapterItem.Video
+        val videoOverflowOptionsFragment = VideoOverflowOptionsFragment.newInstance(video)
+        videoOverflowOptionsFragment.showNow(childFragmentManager, VideoOverflowOptionsFragment.TAG)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == DeleteHelper.REQUEST_PERM_DELETE && resultCode == Activity.RESULT_OK){
+            if(mOverflowItemClickPos != -1){
+                adapterItemList.removeAt(mOverflowItemClickPos)
+                videoListAdapter.notifyItemRemoved(mOverflowItemClickPos)
+                mOverflowItemClickPos = -1
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 }

@@ -10,10 +10,10 @@ import com.music.video.player.azmediaplayer.R
 object Toaster {
     fun show(context: Context, text: CharSequence){
         val toast = Toast.makeText(context, text, Toast.LENGTH_SHORT)
-        toast.view.background.setColorFilter(
+        toast.view?.background?.setColorFilter(
             ContextCompat.getColor(context, R.color.white), PorterDuff.Mode.SRC_IN
         )
-        val textView = toast.view.findViewById(android.R.id.message) as TextView
+        val textView = toast.view?.findViewById(android.R.id.message) as TextView
         textView.setTextColor(ContextCompat.getColor(context, R.color.black))
         toast.show()
     }

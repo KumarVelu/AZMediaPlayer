@@ -41,7 +41,7 @@ class VideoRepository @Inject constructor(
                 MediaStore.Video.Media.DATE_ADDED + " DESC "
             )
 
-            Log.i(TAG, "fetchAllVideos: ${videoCursor.count}")
+            Log.i(TAG, "fetchAllVideos: ${videoCursor?.count}")
 
             videoCursor?.let {
                 while (it.moveToNext()){

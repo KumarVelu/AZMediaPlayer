@@ -16,7 +16,7 @@ class VideoListAdapter(
     private val itemClickListener: IItemClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    var adapterItemList: List<AdapterItem> = emptyList()
+    var adapterItemList = mutableListOf<AdapterItem>()
         set(value) {
             field = value
             notifyDataSetChanged()

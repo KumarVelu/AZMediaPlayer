@@ -20,7 +20,7 @@ class VideoListViewModel(
     }
 
     val loading: MutableLiveData<Boolean> = MutableLiveData()
-    val adapterItemListLiveData: MutableLiveData<Resource<List<AdapterItem>>> = MutableLiveData()
+    val adapterItemListLiveData: MutableLiveData<Resource<MutableList<AdapterItem>>> = MutableLiveData()
 
     override fun onCreate() {
     }
