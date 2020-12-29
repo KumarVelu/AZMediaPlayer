@@ -9,6 +9,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.music.video.player.azmediaplayer.R
 import com.music.video.player.azmediaplayer.data.model.AdapterItem
 import com.music.video.player.azmediaplayer.ui.delete.DeleteHelper
+import com.music.video.player.azmediaplayer.utils.video.OverflowOptionsHelper
 import kotlinx.android.synthetic.main.fragment_video_overflow_options.*
 
 class VideoOverflowOptionsFragment: BottomSheetDialogFragment(){
@@ -30,7 +31,9 @@ class VideoOverflowOptionsFragment: BottomSheetDialogFragment(){
     }
 
     private fun shareVideo() {
-        TODO("Not yet implemented")
+        val shareIntent = OverflowOptionsHelper.getShareIntent(mVideo.videoId)
+        startActivity(Intent.createChooser(shareIntent, getString(R.string.share_via)))
+        dismissAllowingStateLoss()
     }
 
     private fun deleteVideo() {

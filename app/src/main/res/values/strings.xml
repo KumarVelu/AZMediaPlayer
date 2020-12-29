@@ -15,4 +15,6 @@
     <string name="share">Share</string>
     <string name="file_info">File Info</string>
 
+    <string name="share_via">Share Via</string>
+
 </resources>
