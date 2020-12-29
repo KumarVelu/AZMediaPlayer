@@ -12,7 +12,10 @@ sealed class AdapterItem{
         val durationInMs: Long,
         val path: String,
         val dateAdded: Long,
-        val fileSize: String
+        val fileSize: String,
+        val resolution: String = "",
+        val mimeType: String = ""
+
     ) : AdapterItem(), Parcelable
 
     data class SectionItem(val sectionName: String) : AdapterItem()

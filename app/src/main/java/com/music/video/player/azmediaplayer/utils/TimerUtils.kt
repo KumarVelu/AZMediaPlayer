@@ -1,6 +1,7 @@
 package com.music.video.player.azmediaplayer.utils
 
 import java.text.DateFormatSymbols
+import java.text.SimpleDateFormat
 import java.util.*
 
 object TimerUtils {
@@ -48,6 +49,11 @@ object TimerUtils {
         }else{
             "$date $month ${calendar.get(Calendar.YEAR)}"
         }
+    }
+
+    fun getFormattedDateTime(dateAddedInMillis: Long): String{
+        val sdf = SimpleDateFormat("yyyy MMM dd HH:mm:ss", Locale.ENGLISH)
+        return sdf.format(Date(dateAddedInMillis * 1000))
     }
 
 }

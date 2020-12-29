@@ -16,5 +16,14 @@
     <string name="file_info">File Info</string>
 
     <string name="share_via">Share Via</string>
+    <string name="close">Close</string>
+
+    <string name="title">Title</string>
+    <string name="resolution">Resolution</string>
+    <string name="size">Size</string>
+    <string name="format">Format</string>
+    <string name="path">Path</string>
+    <string name="date">Date</string>
+    <string name="information">Information</string>
 
 </resources>

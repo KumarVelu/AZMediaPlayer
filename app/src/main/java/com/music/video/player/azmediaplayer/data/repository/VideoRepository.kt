@@ -22,9 +22,9 @@ class VideoRepository @Inject constructor(
     }
 
     private val videoListProjection = arrayOf(
-        MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME,
-        MediaStore.Video.Media.DURATION, MediaStore.Video.Media.DATA,
-        MediaStore.Video.Media.DATE_ADDED, MediaStore.Video.Media.SIZE
+        MediaStore.Video.Media._ID, MediaStore.Video.Media.DISPLAY_NAME, MediaStore.Video.Media.DURATION,
+        MediaStore.Video.Media.DATA, MediaStore.Video.Media.DATE_ADDED, MediaStore.Video.Media.SIZE,
+        MediaStore.Video.Media.RESOLUTION, MediaStore.Video.Media.MIME_TYPE
     )
 
     @WorkerThread
@@ -45,21 +45,18 @@ class VideoRepository @Inject constructor(
 
             videoCursor?.let {
                 while (it.moveToNext()){
-                    val videoId = it.getLong(it.getColumnIndex(MediaStore.Video.Media._ID))
-                    val displayName = it.getString(it.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME))
-                    val duration = it.getLong(it.getColumnIndex(MediaStore.Video.Media.DURATION))
-                    val path = it.getString(it.getColumnIndex(MediaStore.Video.Media.DATA))
-                    val dateAdded = it.getLong(it.getColumnIndex(MediaStore.Video.Media.DATE_ADDED))
                     val fileSize = it.getLong(it.getColumnIndex(MediaStore.Video.Media.SIZE))
 
                     videoList.add(
                         AdapterItem.Video(
-                            videoId,
-                            displayName,
-                            duration,
-                            path,
-                            dateAdded,
-                            FileUtil.getReadableFileSize(fileSize)
+                            videoId = it.getLong(it.getColumnIndex(MediaStore.Video.Media._ID)),
+                            displayName = it.getString(it.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME)),
+                            durationInMs = it.getLong(it.getColumnIndex(MediaStore.Video.Media.DURATION)),
+                            path = it.getString(it.getColumnIndex(MediaStore.Video.Media.DATA)),
+                            dateAdded = it.getLong(it.getColumnIndex(MediaStore.Video.Media.DATE_ADDED)),
+                            fileSize = FileUtil.getReadableFileSize(fileSize),
+                            resolution = it.getString(it.getColumnIndex(MediaStore.Video.Media.RESOLUTION)),
+                            mimeType = it.getString(it.getColumnIndex(MediaStore.Video.Media.MIME_TYPE))
                         )
                     )
                 }

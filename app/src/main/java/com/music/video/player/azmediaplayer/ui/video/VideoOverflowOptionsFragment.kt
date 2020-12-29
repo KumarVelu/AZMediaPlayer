@@ -27,18 +27,19 @@ class VideoOverflowOptionsFragment: BottomSheetDialogFragment(){
     }
 
     private fun showFileInfo() {
-        TODO("Not yet implemented")
+        dismissAllowingStateLoss()
+        OverflowOptionsHelper.showFileInfoDialog(requireContext(), mVideo)
     }
 
     private fun shareVideo() {
+        dismissAllowingStateLoss()
         val shareIntent = OverflowOptionsHelper.getShareIntent(mVideo.videoId)
         startActivity(Intent.createChooser(shareIntent, getString(R.string.share_via)))
-        dismissAllowingStateLoss()
     }
 
     private fun deleteVideo() {
-        DeleteHelper.deleteVideos(requireActivity(), listOf(mVideo))
         dismissAllowingStateLoss()
+        DeleteHelper.deleteVideos(requireActivity(), listOf(mVideo))
     }
 
     override fun onCreateView(
@@ -57,11 +58,6 @@ class VideoOverflowOptionsFragment: BottomSheetDialogFragment(){
         shareOptionContainer.setOnClickListener(optionsClickListener)
         fileInfoOptionContainer.setOnClickListener(optionsClickListener)
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-
 
     companion object{
         const val TAG = "VideoOverflowOptionsFra"
