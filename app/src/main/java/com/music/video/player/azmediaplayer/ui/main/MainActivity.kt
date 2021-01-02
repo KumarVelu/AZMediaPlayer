@@ -5,13 +5,16 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import com.google.android.material.tabs.TabLayoutMediator
 import com.music.video.player.azmediaplayer.R
 import com.music.video.player.azmediaplayer.di.component.ActivityComponent
 import com.music.video.player.azmediaplayer.ui.base.BaseActivity
 import com.music.video.player.azmediaplayer.ui.delete.DeleteHelper
 import com.music.video.player.azmediaplayer.ui.video.VideoListFragment
+import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
+import javax.inject.Inject
 
 class MainActivity : BaseActivity<MainViewModel>(), EasyPermissions.PermissionCallbacks {
 
@@ -19,6 +22,9 @@ class MainActivity : BaseActivity<MainViewModel>(), EasyPermissions.PermissionCa
         private const val TAG = "MainActivity"
         private const val RC_STORAGE_PERM = 101
     }
+
+    @Inject
+    lateinit var mainActivityViewPagerAdapter: MainActivityViewPagerAdapter
 
     private var mVideoListFragment: VideoListFragment? = null
 
@@ -28,10 +34,21 @@ class MainActivity : BaseActivity<MainViewModel>(), EasyPermissions.PermissionCa
         activityComponent.inject(this)
 
     override fun setupView(savedInstanceState: Bundle?) {
+        toolbar_title.text = getString(R.string.app_name)
+
         if (hasStoragePermission())
-            setUpVideoFragment()
+            setUpViewPager()
         else
             requestStoragePermission()
+    }
+
+    private fun setUpViewPager() {
+        viewPager.apply {
+            adapter = mainActivityViewPagerAdapter
+        }
+        TabLayoutMediator(tabLayout, viewPager){ tab, position ->
+            tab.text = MainActivityViewPagerAdapter.TAB_LIST[position]
+        }.attach()
     }
 
     private fun requestStoragePermission() {
@@ -42,7 +59,7 @@ class MainActivity : BaseActivity<MainViewModel>(), EasyPermissions.PermissionCa
             Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
     }
 
-    private fun setUpVideoFragment() {
+    /*private fun setUpVideoFragment() {
         val fragmentTransaction = supportFragmentManager.beginTransaction()
 
         mVideoListFragment =
@@ -56,7 +73,7 @@ class MainActivity : BaseActivity<MainViewModel>(), EasyPermissions.PermissionCa
         }
 
         fragmentTransaction.commit()
-    }
+    }*/
 
     override fun setupObservers() {
         super.setupObservers()
@@ -74,7 +91,7 @@ class MainActivity : BaseActivity<MainViewModel>(), EasyPermissions.PermissionCa
         if (requestCode == AppSettingsDialog.DEFAULT_SETTINGS_REQ_CODE) {
             // check if storage permission is available and then proceed
             if (EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                setUpVideoFragment()
+                setUpViewPager()
             }
         }else if(requestCode == DeleteHelper.REQUEST_PERM_DELETE && resultCode == Activity.RESULT_OK){
             mVideoListFragment?.onActivityResult(requestCode, resultCode, data)
@@ -91,7 +108,7 @@ class MainActivity : BaseActivity<MainViewModel>(), EasyPermissions.PermissionCa
     }
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
-        setUpVideoFragment()
+        setUpViewPager()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>,

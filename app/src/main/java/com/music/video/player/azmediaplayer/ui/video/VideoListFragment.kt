@@ -47,8 +47,6 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideoListAdapter.I
         fragmentComponent.inject(this)
 
     override fun setupView(view: View) {
-        toolbar_title.text = getString(R.string.app_name)
-
         rv_videos.apply {
             layoutManager = linearLayoutManager
             adapter = videoListAdapter

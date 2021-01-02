@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import com.music.video.player.azmediaplayer.di.ActivityContext
 import com.music.video.player.azmediaplayer.ui.base.BaseActivity
+import com.music.video.player.azmediaplayer.ui.main.MainActivityViewPagerAdapter
 import com.music.video.player.azmediaplayer.ui.main.MainViewModel
 import com.music.video.player.azmediaplayer.utils.ViewModelProviderFactory
 import dagger.Module
@@ -15,6 +16,10 @@ class ActivityModule(private val activity: BaseActivity<*>) {
     @ActivityContext
     @Provides
     fun provideContext(): Context = activity
+
+    @Provides
+    fun provideMainActivityViewPagerAdapter() =
+        MainActivityViewPagerAdapter(activity)
 
     @Provides
     fun provideMainViewModel(
