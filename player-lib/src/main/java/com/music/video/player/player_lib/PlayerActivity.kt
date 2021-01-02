@@ -13,6 +13,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -28,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_player.*
 import kotlinx.android.synthetic.main.toolbar.*
 
 /**
- * A fullscreen activity to play audio or video streams.
+ * A fullscreen activity to play video streams.
  */
 class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
@@ -54,7 +55,11 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         const val EXTRAS_PLAY_POS = "play_position"
         const val TAG = "PlayerActivity"
 
-        fun getStartIntent(context: Context, videoMetaDataList: ArrayList<VideoMetaData>, playPos: Int) =
+        fun getStartIntent(
+            context: Context,
+            videoMetaDataList: ArrayList<VideoMetaData>,
+            playPos: Int
+        ) =
             Intent(context, PlayerActivity::class.java).apply {
                 putParcelableArrayListExtra(EXTRAS_VIDEO_METADATA_LIST, videoMetaDataList)
                 putExtra(EXTRAS_PLAY_POS, playPos)
@@ -65,19 +70,23 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_player)
 
-        videoMetaDataList = intent.getParcelableArrayListExtra(EXTRAS_VIDEO_METADATA_LIST)
+        videoMetaDataList = intent.getParcelableArrayListExtra(EXTRAS_VIDEO_METADATA_LIST)!!
         currentWindow = intent.getIntExtra(EXTRAS_PLAY_POS, 0)
 
         init()
     }
 
     private fun init() {
-
         initViewModel()
         playbackStateListener = PlaybackStateListener()
         initGestureListener()
         initAudioManager()
         initWindowAttrForScreenBrightness()
+        initViews()
+    }
+
+    private fun initViews() {
+        iv_up_button.setOnClickListener { finish() }
     }
 
     private fun initGestureListener() {
@@ -86,7 +95,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
     private fun initViewModel() {
         val viewModelFactory = PlayerViewModelFactory(application, videoMetaDataList)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
+        viewModel = ViewModelProvider(this, viewModelFactory)
             .get(PlayerViewModel::class.java)
 
     }
@@ -154,21 +163,25 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
     }
 
     private fun initializeControllerVisibilityListeners() {
-        video_view.setControllerVisibilityListener{visibility ->
-            if(visibility == View.VISIBLE){
-                showToolbar()
-            }else if(visibility == View.GONE){
-                hideToolbar()
+        video_view.setControllerVisibilityListener { visibility ->
+            if (visibility == View.VISIBLE) {
+                showControlViews()
+            } else if (visibility == View.GONE) {
+                hideControlViews()
             }
         }
     }
 
-    private fun showToolbar(){
+    private fun showControlViews(){
         layout_toolbar.visibility = View.VISIBLE
+        ivVolumeOff.visibility = View.VISIBLE
+        ivScreenRotate.visibility = View.VISIBLE
     }
 
-    private fun hideToolbar(){
+    private fun hideControlViews(){
         layout_toolbar.visibility = View.GONE
+        ivVolumeOff.visibility = View.GONE
+        ivScreenRotate.visibility = View.GONE
     }
 
     override fun onPause() {
@@ -176,7 +189,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         releasePlayer()
     }
 
-    private fun initAudioManager(){
+    private fun initAudioManager() {
         audioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
         maxSystemVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC)
@@ -193,10 +206,11 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         pb_volume.progress = currentVolume
     }
 
-    private fun initWindowAttrForScreenBrightness(){
+    private fun initWindowAttrForScreenBrightness() {
         layoutParams = window.attributes
         // todo : have to change this logic. Have to persist screen brightness value and use that.
-        currentBrightness = if(window.attributes.screenBrightness == -1f) 0.5f else window.attributes.screenBrightness
+        currentBrightness =
+            if (window.attributes.screenBrightness == -1f) 0.5f else window.attributes.screenBrightness
         pb_brightness.progress = (currentBrightness * 100).toInt()
     }
 
@@ -218,7 +232,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         gestureDetector = null
     }
 
-    private inner class PlaybackStateListener: Player.EventListener{
+    private inner class PlaybackStateListener : Player.EventListener {
 
         override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
 
@@ -228,7 +242,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         because the onPositionDiscontinuity()  may be triggered for other reasons. */
         override fun onPositionDiscontinuity(reason: Int) {
             player?.let {
-                if(currentWindow != it.currentWindowIndex){
+                if (currentWindow != it.currentWindowIndex) {
                     currentWindow = it.currentWindowIndex
                     setToolbarTitle()
                     video_view.setShowBuffering(PlayerView.SHOW_BUFFERING_NEVER)
@@ -237,9 +251,9 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         }
 
         override fun onIsPlayingChanged(isPlaying: Boolean) {
-            if(isPlaying){
+            if (isPlaying) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }else{
+            } else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
         }
@@ -278,10 +292,10 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
     override fun increaseBrightness() {
 
-        if(currentBrightness < 1.0f){
+        if (currentBrightness < 1.0f) {
 
             currentBrightness += 0.05f
-            if(currentBrightness > 1.0f) currentBrightness = 1.0f
+            if (currentBrightness > 1.0f) currentBrightness = 1.0f
 
             layoutParams.screenBrightness = currentBrightness
             window.attributes = layoutParams
@@ -293,10 +307,10 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
     override fun decreaseBrightness() {
 
-        if(currentBrightness > 0f){
+        if (currentBrightness > 0f) {
 
             currentBrightness -= 0.05f
-            if(currentBrightness < 0f) currentBrightness = 0f
+            if (currentBrightness < 0f) currentBrightness = 0f
 
             layoutParams.screenBrightness = currentBrightness
             window.attributes = layoutParams
@@ -309,7 +323,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
     override fun seekForward() {
         player?.let {
-            if(it.currentPosition < it.duration){
+            if (it.currentPosition < it.duration) {
                 it.seekTo(it.currentPosition + Constants.DEFAULT_SEEK_TIME)
             }
         }
@@ -317,7 +331,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
     override fun seekBackward() {
         player?.let {
-            if(it.currentPosition > 0){
+            if (it.currentPosition > 0) {
                 it.seekTo(it.currentPosition - Constants.DEFAULT_SEEK_TIME)
             }
         }

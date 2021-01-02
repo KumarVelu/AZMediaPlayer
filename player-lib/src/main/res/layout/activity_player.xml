@@ -15,7 +15,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="parent"
+        />
 
     <ProgressBar
         android:id="@+id/pb_volume"
@@ -42,6 +43,30 @@
         app:layout_constraintEnd_toEndOf="@+id/video_view"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/ivVolumeOff"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:background="@drawable/bg_rounded_black"
+        android:padding="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_toolbar"
+        app:srcCompat="@drawable/ic_volume_off" />
+
+    <ImageView
+        android:id="@+id/ivScreenRotate"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_rounded_black"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/ivVolumeOff"
+        app:layout_constraintStart_toEndOf="@+id/ivVolumeOff"
+        app:layout_constraintTop_toTopOf="@+id/ivVolumeOff"
+        app:srcCompat="@drawable/ic_screen_rotation" />
 
     <include
         android:id="@+id/layout_toolbar"
