@@ -1,4 +1,4 @@
-package com.music.video.player.azmediaplayer.ui.video
+package com.music.video.player.azmediaplayer.ui.home.video
 
 import android.content.Context
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package com.music.video.player.azmediaplayer.ui.video
+package com.music.video.player.azmediaplayer.ui.home.video
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -49,7 +49,7 @@ class VideoListViewModel(
                     adapterItemVideoList.add(videoItem)
                 }
                 adapterItemListLiveData.postValue(Resource.success(adapterItemVideoList))
-                loading.postValue(true)
+                loading.postValue(false)
             }
         }
     }

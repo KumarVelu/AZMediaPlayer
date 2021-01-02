@@ -3,7 +3,8 @@ package com.music.video.player.azmediaplayer.ui.main
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.music.video.player.azmediaplayer.ui.video.VideoListFragment
+import com.music.video.player.azmediaplayer.ui.home.folder.FolderListFragment
+import com.music.video.player.azmediaplayer.ui.home.video.VideoListFragment
 import javax.inject.Inject
 
 
@@ -20,7 +21,7 @@ class MainActivityViewPagerAdapter @Inject constructor(
     override fun createFragment(position: Int): Fragment {
         return when (position) {
             0 -> VideoListFragment.newInstance()
-            1 -> VideoListFragment.newInstance()
+            1 -> FolderListFragment.newInstance()
             else -> throw IllegalArgumentException("Unknown tab position")
         }
     }

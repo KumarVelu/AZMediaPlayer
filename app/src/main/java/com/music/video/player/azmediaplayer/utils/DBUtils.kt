@@ -6,9 +6,8 @@ class DBUtils {
 
     companion object{
 
-        fun closeCurosr(cursor: Cursor?){
+        fun closeCursor(cursor: Cursor?){
             cursor?.close()
         }
-
     }
 }

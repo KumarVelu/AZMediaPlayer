@@ -10,7 +10,7 @@ import com.music.video.player.azmediaplayer.R
 import com.music.video.player.azmediaplayer.di.component.ActivityComponent
 import com.music.video.player.azmediaplayer.ui.base.BaseActivity
 import com.music.video.player.azmediaplayer.ui.delete.DeleteHelper
-import com.music.video.player.azmediaplayer.ui.video.VideoListFragment
+import com.music.video.player.azmediaplayer.ui.home.video.VideoListFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions

@@ -1,4 +1,4 @@
-package com.music.video.player.azmediaplayer.ui.video
+package com.music.video.player.azmediaplayer.ui.home.video
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
@@ -10,8 +10,9 @@ import com.music.video.player.azmediaplayer.data.model.AdapterItem
 import com.music.video.player.azmediaplayer.utils.TimerUtils
 import com.music.video.player.azmediaplayer.utils.common.FileUtil
 import kotlinx.android.synthetic.main.item_view_date_header.view.*
+import kotlinx.android.synthetic.main.item_view_folder.view.*
 import kotlinx.android.synthetic.main.item_view_video.view.*
-import java.io.File
+import kotlinx.android.synthetic.main.item_view_video.view.tvFolderName
 
 class VideoItemViewHolder(
     itemView: View,
@@ -50,5 +51,14 @@ class VideoSectionItemViewHolder(
 
     fun bind(dateAdded: String) {
         itemView.tvDateAdded.text = dateAdded
+    }
+}
+
+class FolderItemViewHolder(
+    itemView: View
+): RecyclerView.ViewHolder(itemView){
+
+    fun bind(folderName: String){
+        itemView.tvFolderName.text = folderName
     }
 }

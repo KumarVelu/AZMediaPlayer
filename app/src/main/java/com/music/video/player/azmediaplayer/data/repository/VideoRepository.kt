@@ -8,7 +8,6 @@ import androidx.annotation.WorkerThread
 import com.music.video.player.azmediaplayer.data.model.AdapterItem
 import com.music.video.player.azmediaplayer.di.ApplicationContext
 import com.music.video.player.azmediaplayer.utils.DBUtils
-import com.music.video.player.azmediaplayer.utils.TimerUtils
 import com.music.video.player.azmediaplayer.utils.common.FileUtil
 import java.lang.Exception
 import javax.inject.Inject
@@ -65,7 +64,7 @@ class VideoRepository @Inject constructor(
             Log.e(TAG, "fetchAllVideos: $e")
         }
         finally {
-            DBUtils.closeCurosr(videoCursor)
+            DBUtils.closeCursor(videoCursor)
         }
 
         return videoList

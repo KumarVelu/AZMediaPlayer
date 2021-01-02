@@ -1,11 +1,10 @@
-package com.music.video.player.azmediaplayer.ui.video
+package com.music.video.player.azmediaplayer.ui.home.video
 
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.music.video.player.azmediaplayer.R
@@ -25,15 +24,12 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideoListAdapter.I
         const val TAG = "VideoListFragment"
 
         fun newInstance(): VideoListFragment {
-            val args = Bundle()
-            val fragment = VideoListFragment()
-            fragment.arguments = args
-            return fragment
+            val args = Bundle().apply {  }
+            return VideoListFragment().apply {
+                arguments = args
+            }
         }
     }
-
-    @Inject
-    lateinit var linearLayoutManager: LinearLayoutManager
 
     @Inject
     lateinit var videoListAdapter: VideoListAdapter
@@ -47,10 +43,7 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideoListAdapter.I
         fragmentComponent.inject(this)
 
     override fun setupView(view: View) {
-        rv_videos.apply {
-            layoutManager = linearLayoutManager
-            adapter = videoListAdapter
-        }
+        rv_videos.adapter = videoListAdapter
     }
 
     override fun setupObservers() {
@@ -61,7 +54,6 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideoListAdapter.I
         })
 
         viewModel.adapterItemListLiveData.observe(this, Observer {
-            Log.i(TAG, "setupObservers: $it")
             it.data?.run {
                 adapterItemList = this
                 videoListAdapter.adapterItemList = this@VideoListFragment.adapterItemList
