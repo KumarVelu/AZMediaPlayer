@@ -3,18 +3,16 @@ package com.music.video.player.player_lib
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ActivityInfo
+import android.content.res.Configuration
 import android.media.AudioManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.SeekBar
-import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.Timeline
@@ -53,6 +51,8 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
         const val EXTRAS_VIDEO_METADATA_LIST = "video_metadata_list"
         const val EXTRAS_PLAY_POS = "play_position"
+        const val EXTRAS_PLAY_BACK_POS = "play_back_pos"
+        const val EXTRAS_PLAY_WHEN_READY = "play_when_ready"
         const val TAG = "PlayerActivity"
 
         fun getStartIntent(
@@ -87,6 +87,31 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
     private fun initViews() {
         iv_up_button.setOnClickListener { finish() }
+        ivScreenRotate.setOnClickListener { changeOrientation() }
+        toggleBtnVolumeOff.setOnCheckedChangeListener{ view, isChecked ->
+            if(isChecked) turnVolumeOff()
+            else turnVolumeOn()
+        }
+    }
+
+    private fun turnVolumeOn() {
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
+    }
+
+    private fun turnVolumeOff() {
+        currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)
+        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0)
+    }
+
+
+
+    private fun changeOrientation() {
+        val orientation = resources.configuration.orientation
+        requestedOrientation = if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+            ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }else{
+            ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
     }
 
     private fun initGestureListener() {
@@ -134,27 +159,18 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         video_view.player = player
 
         val timeBar = video_view.findViewById<DefaultTimeBar>(R.id.exo_progress)
-
         timeBar.addListener(object : TimeBar.OnScrubListener {
             override fun onScrubMove(timeBar: TimeBar, position: Long) {
-                Log.i(TAG, "onScrubMove: $position")
                 player?.seekTo(position)
             }
 
-            override fun onScrubStart(timeBar: TimeBar, position: Long) {
-
-            }
-
-            override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {
-
-            }
+            override fun onScrubStart(timeBar: TimeBar, position: Long) {}
+            override fun onScrubStop(timeBar: TimeBar, position: Long, canceled: Boolean) {}
 
         })
 
         player?.playWhenReady = playWhenReady
         player?.seekTo(currentWindow, playbackPosition)
-
-        player?.seekParameters
     }
 
     private fun initializeListeners() {
@@ -174,13 +190,13 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
     private fun showControlViews(){
         layout_toolbar.visibility = View.VISIBLE
-        ivVolumeOff.visibility = View.VISIBLE
+        toggleBtnVolumeOff.visibility = View.VISIBLE
         ivScreenRotate.visibility = View.VISIBLE
     }
 
     private fun hideControlViews(){
         layout_toolbar.visibility = View.GONE
-        ivVolumeOff.visibility = View.GONE
+        toggleBtnVolumeOff.visibility = View.GONE
         ivScreenRotate.visibility = View.GONE
     }
 
@@ -215,7 +231,6 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
     }
 
     private fun releasePlayer() {
-
         player?.let {
             it.removeListener(playbackStateListener)
             playbackPosition = it.currentPosition
@@ -224,7 +239,6 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
             it.release()
             player = null
         }
-
     }
 
     override fun onDestroy() {
@@ -234,9 +248,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
 
     private inner class PlaybackStateListener : Player.EventListener {
 
-        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
-
-        }
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {}
 
         /* If you only want to detect playlist item changes, then it’s necessary to compare against the last known window index or tag,
         because the onPositionDiscontinuity()  may be triggered for other reasons. */
@@ -258,10 +270,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
             }
         }
 
-        override fun onTimelineChanged(timeline: Timeline, reason: Int) {
-            Log.i(TAG, "onTimelineChanged: $timeline, reason : $reason")
-        }
-
+        override fun onTimelineChanged(timeline: Timeline, reason: Int) {}
     }
 
     private fun setToolbarTitle() {
@@ -269,7 +278,6 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
     }
 
     override fun increaseVolume() {
-
         if (currentVolume <= maxSystemVolume) {
             ++currentVolume
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
@@ -340,6 +348,22 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
     override fun onGestureEnd() {
         pb_brightness.visibility = View.GONE
         pb_volume.visibility = View.GONE
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.apply {
+            putLong(EXTRAS_PLAY_BACK_POS, playbackPosition)
+            putBoolean(EXTRAS_PLAY_WHEN_READY, playWhenReady)
+        }
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        with(savedInstanceState){
+            playbackPosition = getLong(EXTRAS_PLAY_BACK_POS)
+            playWhenReady = getBoolean(EXTRAS_PLAY_WHEN_READY)
+        }
     }
 
 }
