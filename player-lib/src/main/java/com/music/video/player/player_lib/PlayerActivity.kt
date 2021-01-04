@@ -20,6 +20,8 @@ import com.google.android.exoplayer2.ui.DefaultTimeBar
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.ui.TimeBar
 import com.music.video.player.player_lib.data.model.VideoMetaData
+import com.music.video.player.player_lib.extensions.setGone
+import com.music.video.player.player_lib.extensions.setVisible
 import com.music.video.player.player_lib.gesture.MyGestureDetector
 import com.music.video.player.player_lib.gesture.VideoGestureListener
 import com.music.video.player.player_lib.utils.constants.Constants
@@ -189,15 +191,15 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
     }
 
     private fun showControlViews(){
-        layout_toolbar.visibility = View.VISIBLE
-        toggleBtnVolumeOff.visibility = View.VISIBLE
-        ivScreenRotate.visibility = View.VISIBLE
+        layout_toolbar.setVisible()
+        toggleBtnVolumeOff.setVisible()
+        ivScreenRotate.setVisible()
     }
 
     private fun hideControlViews(){
-        layout_toolbar.visibility = View.GONE
-        toggleBtnVolumeOff.visibility = View.GONE
-        ivScreenRotate.visibility = View.GONE
+        layout_toolbar.setGone()
+        toggleBtnVolumeOff.setGone()
+        ivScreenRotate.setGone()
     }
 
     override fun onPause() {
@@ -283,7 +285,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
         }
 
-        pb_volume.visibility = View.VISIBLE
+        pb_volume.setVisible()
         pb_volume.progress = currentVolume
     }
 
@@ -293,9 +295,8 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0)
         }
 
-        pb_volume.visibility = View.VISIBLE
+        pb_volume.setVisible()
         pb_volume.progress = currentVolume
-
     }
 
     override fun increaseBrightness() {
@@ -310,7 +311,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
             pb_brightness.progress = (currentBrightness * 100).toInt()
         }
 
-        pb_brightness.visibility = View.VISIBLE
+        pb_brightness.setVisible()
     }
 
     override fun decreaseBrightness() {
@@ -325,7 +326,7 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
             pb_brightness.progress = (currentBrightness * 100).toInt()
         }
 
-        pb_brightness.visibility = View.VISIBLE
+        pb_brightness.setVisible()
 
     }
 
@@ -346,8 +347,8 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
     }
 
     override fun onGestureEnd() {
-        pb_brightness.visibility = View.GONE
-        pb_volume.visibility = View.GONE
+        pb_brightness.setGone()
+        pb_volume.setGone()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

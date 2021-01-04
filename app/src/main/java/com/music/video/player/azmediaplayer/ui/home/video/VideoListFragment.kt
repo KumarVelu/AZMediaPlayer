@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.music.video.player.azmediaplayer.R
 import com.music.video.player.azmediaplayer.data.model.AdapterItem
 import com.music.video.player.azmediaplayer.di.component.FragmentComponent
+import com.music.video.player.azmediaplayer.extensions.setVisible
 import com.music.video.player.azmediaplayer.ui.base.BaseFragment
 import com.music.video.player.azmediaplayer.ui.delete.DeleteHelper
 import com.music.video.player.player_lib.PlayerActivity
@@ -50,7 +51,7 @@ class VideoListFragment : BaseFragment<VideoListViewModel>(), VideoListAdapter.I
         super.setupObservers()
 
         viewModel.loading.observe(this, Observer {
-            pb_loading.visibility = if (it) View.VISIBLE else View.GONE
+            pb_loading.setVisible(visible = it)
         })
 
         viewModel.adapterItemListLiveData.observe(this, Observer {

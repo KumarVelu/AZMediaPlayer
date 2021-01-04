@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.music.video.player.azmediaplayer.R
 import com.music.video.player.azmediaplayer.di.component.FragmentComponent
+import com.music.video.player.azmediaplayer.extensions.setVisible
 import com.music.video.player.azmediaplayer.ui.base.BaseFragment
 import kotlinx.android.synthetic.main.fragment_folder_list.*
 import kotlinx.android.synthetic.main.fragment_video_list.*
@@ -43,7 +44,7 @@ class FolderListFragment : BaseFragment<FolderListViewModel>() {
         super.setupObservers()
 
         viewModel.loading.observe(this, Observer {
-            pbLoading.visibility = if (it) View.VISIBLE else View.GONE
+            pbLoading.setVisible(visible = it)
         })
 
         viewModel.folderToVideoMapLiveData.observe(this, Observer {
