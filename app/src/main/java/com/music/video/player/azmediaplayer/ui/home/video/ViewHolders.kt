@@ -34,7 +34,7 @@ class VideoItemViewHolder(
         Glide
             .with(itemView.context)
             .load(video.path)
-            .placeholder(R.mipmap.ic_launcher) // todo : change placeholder image,
+            .placeholder(R.drawable.ic_baseline_perm_media)
             .transform(CenterCrop(), RoundedCorners(12))
             .into(itemView.iv_video_thumbnail)
 

@@ -106,8 +106,6 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0)
     }
 
-
-
     private fun changeOrientation() {
         val orientation = resources.configuration.orientation
         requestedOrientation = if(orientation == Configuration.ORIENTATION_LANDSCAPE){
@@ -125,7 +123,6 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
         val viewModelFactory = PlayerViewModelFactory(application, videoMetaDataList)
         viewModel = ViewModelProvider(this, viewModelFactory)
             .get(PlayerViewModel::class.java)
-
     }
 
     private fun setUpObservers() {
@@ -142,7 +139,6 @@ class PlayerActivity : AppCompatActivity(), VideoGestureListener {
             initializePlayer()
             setUpObservers()
         }
-
         initializeListeners()
     }
 
