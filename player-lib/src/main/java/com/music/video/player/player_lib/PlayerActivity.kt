@@ -26,6 +26,7 @@ import com.music.video.player.player_lib.gesture.MyGestureDetector
 import com.music.video.player.player_lib.gesture.VideoGestureListener
 import com.music.video.player.player_lib.utils.constants.Constants
 import kotlinx.android.synthetic.main.activity_player.*
+import kotlinx.android.synthetic.main.custom_playback_control.view.*
 import kotlinx.android.synthetic.main.toolbar.*
 
 /**
